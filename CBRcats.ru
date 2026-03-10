@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBRcats: WORLD ENGINE</title>
+    <style>
+        :root {
+            --bg-dark: #121717;
+            --panel-bg: #1a1f1f;
+            --accent-purple: #9c27b0;
+            --accent-blue: #3498db;
+            --text-gray: #b0b0b0;
+            --border-color: #2c3434;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            overflow: hidden;
+        }
+
+        /* --- ЭКРАН ВХОДА И РЕГИСТРАЦИИ --- */
+        #auth-screen {
+            position: fixed; inset: 0;
+            background: #0f1212;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+
+        .auth-container {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0b0e0e;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-blue);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* --- ГЛАВНЫЙ ИНТЕРФЕЙС --- */
+        #main-ui { display: none; height: 100vh; width: 100vw; }
+
+        /* Боковое меню */
+        #sidebar {
+            width: 70px;
+            background: #0b0e0e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            border-right: 1px solid var(--border-color);
+            gap: 15px;
+        }
+
+        .nav-btn {
+            width: 45px; height: 45px;
+            background: #1e2424;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s; border: none; font-size: 20px;
+        }
+        .nav-btn:hover { background: var(--accent-blue); }
+        .nav-btn.active { border-left: 3px solid var(--accent-blue); background: #252d2d; }
+        .nav-btn.admin-only { background: var(--accent-purple); display: none; }
+
+        /* Основной контент */
+        #content-area { flex: 1; position: relative; display: flex; flex-direction: column; }
+
+        /* Верхняя панель */
+        #top-bar {
+            height: 50px;
+            background: var(--panel-bg);
+            display: flex; align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Окна контента */
+        .window { display: none; padding: 20px; height: calc(100% - 50px); overflow-y: auto; }
+        .window.active { display: block; }
+
+        /* Игровая область (Canvas-like) */
+        #game-window {
+            padding: 0;
+            background-image: radial-gradient(circle, #1a2323 1px, transparent 1px);
+            background-size: 30px 30px;
+            position: relative;
+        }
+
+        #player {
+            position: absolute;
+            transition: 0.3s ease-out;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .player-avatar {
+            width: 85px; height: auto;
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.4));
+            transition: transform 0.2s;
+        }
+
+        /* Блокнот и Инфо в Игровой */
+        #right-panel {
+            position: absolute; right: 20px; top: 20px; bottom: 20px;
+            width: 350px;
+            background: rgba(26, 31, 31, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex; flex-direction: column;
+        }
+
+        #notepad {
+            flex: 1; background: #0b0e0e;
+            color: #00ff00; font-family: monospace;
+            padding: 10px; border: none; resize: none;
+            margin-top: 10px; border-radius: 4px;
+        }
+
+        /* Терминал админа */
+        .terminal {
+            background: #050505;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid var(--accent-purple);
+        }
+
+        .btn-save {
+            background: var(--accent-blue);
+            border: none; color: white;
+            padding: 10px; margin-top: 10px;
+            border-radius: 4px; cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="auth-screen">
+    <div class="auth-container" id="login-form">
+        <h2 style="color: var(--accent-blue);">Вход в CBRcats</h2>
+        <input type="email" id="auth-email" placeholder="Email (hmjmhm14@gmail.com)">
+        <input type="password" id="auth-pass" placeholder="Пароль">
+        <button class="auth-btn" onclick="handleAuth()">Войти</button>
+        <p style="font-size: 12px; color: var(--text-gray); margin-top: 15px;">
+            Нет аккаунта? Данные сохраняются локально.
+        </p>
+    </div>
+</div>
+
+<div id="main-ui" style="display: flex;">
+    <div id="sidebar">
+        <button class="nav-btn active" onclick="showWindow('game')" title="Игровая">🌍</button>
+        <button class="nav-btn" onclick="showWindow('profile')" title="Мой кот">🐱</button>
+        <button class="nav-btn" onclick="showWindow('chat')" title="Чат">💬</button>
+        <button class="nav-btn" onclick="showWindow('news')" title="Новости">📰</button>
+        <button class="nav-btn admin-only" id="admin-btn" onclick="showWindow('admin')" title="Панель разработчика">⚙️</button>
+        <button class="nav-btn" style="margin-top: auto; color: #ff5555;" onclick="logout()">🚪</button>
+    </div>
+
+    <div id="content-area">
+        <div id="top-bar">
+            <div id="location-name">Локация: Одинокая поляна</div>
+            <div id="user-info-top" style="color: var(--accent-blue); font-weight: bold;"></div>
+        </div>
+
+        <div id="game" class="window window-active active" style="padding:0; position:relative;" onclick="movePlayer(event)">
+            <div id="player" style="left: 100px; top: 100px;">
+                <div style="font-size: 12px; margin-bottom: 5px; text-shadow: 1px 1px 2px black; font-weight: bold;" id="player-name-label"></div>
+                <img src="https://i.ibb.co/cKG0hn9S/IMG-8055.png" class="player-avatar" id="cat-sprite">
+            </div>
+
+            <div id="right-panel">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <img src="https://catwar.net/avatar/1583508.jpg" width="60" style="border-radius:4px; border: 1px solid var(--accent-blue);">
+                    <div>
+                        <div id="profile-name" style="font-weight:bold;"></div>
+                        <div id="profile-id" style="font-size:12px; color: gold;"></div>
+                    </div>
+                </div>
+                <div style="margin-top:15px; font-size:13px; color: #00ff00;">Блокнот:</div>
+                <textarea id="notepad"></textarea>
+                <button class="btn-save" onclick="saveNotepad()">💾 Сохранить изменения</button>
+            </div>
+        </div>
+
+        <div id="profile" class="window">
+            <h1>Мой персонаж</h1>
+            <div style="background: var(--panel-bg); padding: 20px; border-radius: 10px;">
+                <p><strong>Статус:</strong> <span id="p-status">Наблюдает.</span></p>
+                <p><strong>Сторона:</strong> <span id="p-side">Племя Звездной Пыли</span></p>
+                <hr style="border: 0.5px solid var(--border-color);">
+                <button class="btn-save" style="background: #444;">Редактировать профиль</button>
+            </div>
+        </div>
+
+        <div id="chat" class="window">
+            <h1>Общий чат</h1>
+            <div id="chat-box" style="height: 300px; background: #0b0e0e; border-radius: 8px; padding: 15px; overflow-y: auto; margin-bottom: 10px;">
+                <div style="color: gold;">Система: Добро пожаловать в чат!</div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="chat-input" placeholder="Введите сообщение..." style="flex: 1; padding: 10px; background: #1e2424; border: 1px solid #333; color: white;">
+                <button class="btn-save" style="margin:0;" onclick="sendMsg()">Отправить</button>
+            </div>
+        </div>
+
+        <div id="admin" class="window">
+            <h1 style="color: var(--accent-purple);">Terminal: Admin Access</h1>
+            <p>Добро пожаловать, Создатель.</p>
+            <div class="terminal">
+                > Система онлайн... <br>
+                > База данных: Активна (Local Emulator) <br>
+                > Объектов в памяти: <span id="obj-count">1</span> <br>
+                <br>
+                > [ДОСТУПНЫЕ КОМАНДЫ]: <br>
+                - /wipe_chat : Очистить логи <br>
+                - /set_id [val] : Сменить ID
+            </div>
+        </div>
+
+        <div id="news" class="window">
+            <h1>Новости мира</h1>
+            <div style="border-left: 4px solid var(--accent-blue); padding-left: 15px; margin-bottom: 20px;">
+                <h3>Запуск World Engine</h3>
+                <p>Интерфейс успешно обновлен. Добавлены функции перемещения и сохранения блокнота.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Изначальные данные админа
+    const ADMIN_CREDS = {
+        email: "hmjmhm14@gmail.com",
+        pass: "Towuoponchik12345999tfwwxh66"
+    };
+
+    let currentUser = null;
+    let lastX = 100; // Для отслеживания поворота кота
+
+    // Авторизация
+    function handleAuth() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+
+        if (email === ADMIN_CREDS.email && pass === ADMIN_CREDS.pass) {
+            currentUser = { id: 1, name: "Частокол", role: "Разработчик", email: email };
+        } else {
+            currentUser = { id: Math.floor(Math.random()*900) + 100, name: "Игрок_" + email.split('@')[0], role: "Игрок", email: email };
+        }
+
+        loginSuccess();
+    }
+
+    function loginSuccess() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-ui').style.display = 'flex';
+        
+        document.getElementById('user-info-top').innerText = `${currentUser.name} [ID: ${currentUser.id}]`;
+        document.getElementById('profile-name').innerText = currentUser.name;
+        document.getElementById('profile-id').innerText = `ID: ${currentUser.id}`;
+        document.getElementById('player-name-label').innerText = currentUser.name;
+
+        if(currentUser.id === 1) {
+            document.getElementById('admin-btn').style.display = 'flex';
+        }
+
+        const savedNote = localStorage.getItem('notepad_' + currentUser.id);
+        if(savedNote) document.getElementById('notepad').value = savedNote;
+    }
+
+    function showWindow(winId) {
+        document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(winId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // Перемещение кота с поворотом модельки
+    function movePlayer(e) {
+        if(e.target.id === 'game') {
+            const player = document.getElementById('player');
+            const sprite = document.getElementById('cat-sprite');
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left - 42; // Центровка по ширине спрайта
+            const y = e.clientY - rect.top - 60;  // Центровка по высоте
+            
+            // Поворот кота в зависимости от направления
+            if (x > lastX) {
+                sprite.style.transform = "scaleX(1)";
+            } else if (x < lastX) {
+                sprite.style.transform = "scaleX(-1)";
+            }
+
+            player.style.left = x + 'px';
+            player.style.top = y + 'px';
+            lastX = x;
+        }
+    }
+
+    function saveNotepad() {
+        const text = document.getElementById('notepad').value;
+        localStorage.setItem('notepad_' + currentUser.id, text);
+        alert("Блокнот сохранен!");
+    }
+
+    function sendMsg() {
+        const input = document.getElementById('chat-input');
+        if(input.value.trim() !== "") {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<div><span style="color:var(--accent-blue)">${currentUser.name}</span>: ${input.value}</div>`;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    function logout() {
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
