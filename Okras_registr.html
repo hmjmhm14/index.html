@@ -25,6 +25,7 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
+        /* ЛЕВАЯ ЧАСТЬ - ПРЕДПРОСМОТР */
         .preview-side {
             display: flex;
             flex-direction: column;
@@ -38,15 +39,35 @@
         .cat-display {
             width: 400px;
             height: 400px;
-            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 15px;
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.02);
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* Слой с основной моделькой (контур) */
+        .base-model {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png') no-repeat center center;
+            background-size: contain;
+            z-index: 1;
+        }
+
+        /* Слой с выбранным окрасом */
+        .okras-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            transition: 0.5s;
+            z-index: 2;
+            transition: 0.3s ease-in-out;
         }
 
         .preview-label {
@@ -57,6 +78,7 @@
             font-weight: bold;
         }
 
+        /* ПРАВАЯ ЧАСТЬ - СПИСОК */
         .selector-side {
             display: flex;
             flex-direction: column;
@@ -106,10 +128,11 @@
         .okras-img-mini {
             width: 80px;
             height: 80px;
-            background: #000;
+            background-color: #000;
             margin: 0 auto 10px;
             border-radius: 5px;
             background-size: cover;
+            background-position: center;
         }
 
         .save-btn {
@@ -125,7 +148,7 @@
             transition: 0.3s;
         }
 
-        .save-btn:hover { background: #45a049; }
+        .save-btn:hover { background: #45a049; letter-spacing: 1px; }
 
         .scroll-area::-webkit-scrollbar { width: 5px; }
         .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
@@ -135,37 +158,45 @@
 
 <div class="editor-container">
     <div class="preview-side">
-        <div class="cat-display" id="cat-preview">
-            <span style="color: #666;" id="placeholder-text">ВЫБЕРИТЕ ОКРАС</span>
+        <div class="cat-display">
+            <div class="base-model"></div>
+            <div class="okras-layer" id="okras-preview"></div>
         </div>
-        <div class="preview-label" id="selected-name">ОКРАС</div>
+        <div class="preview-label" id="selected-name">ВЫБЕРИТЕ ОКРАС</div>
     </div>
 
     <div class="selector-side">
         <div class="selector-title">Доступные окрасы</div>
-        <div class="scroll-area" id="okras-list">
-            </div>
+        <div class="scroll-area" id="okras-list"></div>
         <button class="save-btn" onclick="confirmOkras()">Завершить создание</button>
     </div>
 </div>
 
 <script>
-    // Массив твоих окрасов
     const okrasData = [
-        { id: 'gray', name: 'Серый', img: 'https://i.ibb.co/qYhV1ny8/image.jpg' },
-        { id: 'black', name: 'Черный', img: 'https://i.ibb.co/RGXR1DyG/image.jpg' },
-        { id: 'forest', name: 'Лесной', img: 'https://i.ibb.co/q2K768f/spooky-forest-mystery-horror-beauty-nature-generated-by-ai.jpg' }
+        { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/1JBuWj7BxdwpksiW2e3415tfG8m6s3XHIv2ed8o841j0w3Wm-FxQM0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8078.png' },
+        { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/YuXGokbsOuLU8Kj9jWXCv7kgpDvBOKitH2KKzGaVbVqqcUMnZX5yXYoTt-SIZ_7y73wwtS3CdnnO1PefrFRlv5fbmdcLH_cgW6Lr_T4s-xZ1tBc45XsBJwsd9rcBpNYvUBn0XBrSOKg2/IMG_8103.png' },
+        { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/BJPWf67r3d_4me3KpEodEA6y2ZZbjumpAwvsHW_T_RIB4kHmN_rFcRwyte444U0m99toYuhyy2MTMni0OTg5QD98Faf_XDDepz325f2nZuGizjZK2mGYcWx1LVKdIic9AajPaJ7NLiHU/IMG_8080.png' },
+        { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/1OcGOFhH7RuKF7xq4VvyRwtdG52uTS_Zwf_lDAdimp0a_7xIt038Ixh48XToBmt2d8Gd6K_wAtBYkG8myFlI_oX0h68h6zSMUJ456doqGarB--JyzdTye3H4cn8DM0TGQJOlWhsPmBtz/IMG_8079.png' },
+        { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/SdP8pap17v1tsyV_6x9gxJG0scmEjrMAA0v37Hnfr289PtqXOCq-vnQtHfn4MDn-rAX348zb_QAbU8wrdsZNmRPEmB9bXJXgZvk0euPwsUBUmfpxACTUvbtkUgQC7HLaKg2BGW_5fXM4/IMG_8081.png' },
+        { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/YmQVM4-0mo_aO_VHXkUYLWJaAt4InFN8cSyuOi4J8ymviFLXLwXQp0r4t0uIxA-Exys5g-gT61JgAVq1-WczmMLT9RjiTySvYePneWCBi7GszqRB1kkvU_k48H5Kazou29Zda6Uashaa/IMG_8084.png' },
+        { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/cE7ERL5kdNzMqa-KEB6V1pAB8rOzFrQ7in85ljr2CjbD6NmKLOz-5dUFJ1J0s4I9f7_7LRK81zw23YSme1R-v_9rkJX2fgbogDFk6WJLf5oz2zgPViT-2K4WNqx1_QfoRzABIu3GT15E/IMG_8083.png' },
+        { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/YJ10qdVGAhJZQMXaz-oypYuG4vMAzPG8dSj50XLYPaWgky_Js2EC6KNd-4v5aPNP1_cCfPJfIGzhk4oG_C8QeIe7jlXaF-Cfydo2Og5bUnCFbCv1JvRSLmQY9JEGta_dImAmo6WAFDC1/IMG_8082.png' },
+        { name: 'Темно-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/9vKVXwkCdimh884acxWCgVR4TZC_C1YPVhHaovRDF7PcYpZKMmCJfuq-ZWMFNv8DnilH55KyZKNbz1S2MexJjNNegW_JrJ14b5atlYCvQHMKCx6T46R_QYo7lBm7b8YQYAL4tce4QOHC/IMG_8085.png' },
+        { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' },
+        { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/3b3DZeajKh2NkGO8fwmTa0YM0vmWYJTucEj9FgQvybjCZo1r2WJS9-R9-NCoEkpIVQt7gLAEiF-u8vr-Kd3l4GA-Efk7Qli0TJ_VOhMSQ9mScGL64kVrIJJ-6jRwFUkTwpirEOBt6bzv/IMG_8087.png' }
     ];
 
     let currentSelected = null;
-
     const listContainer = document.getElementById('okras-list');
+
+    // Генерация карточек выбора
     okrasData.forEach(item => {
         const card = document.createElement('div');
         card.className = 'okras-card';
         card.innerHTML = `
             <div class="okras-img-mini" style="background-image: url('${item.img}')"></div>
-            <div style="font-size: 12px;">${item.name}</div>
+            <div style="font-size: 11px; text-transform: uppercase;">${item.name}</div>
         `;
         card.onclick = () => selectOkras(item, card);
         listContainer.appendChild(card);
@@ -175,9 +206,8 @@
         document.querySelectorAll('.okras-card').forEach(c => c.classList.remove('active'));
         element.classList.add('active');
         
-        const preview = document.getElementById('cat-preview');
-        preview.style.backgroundImage = `url('${item.img}')`;
-        document.getElementById('placeholder-text').style.display = 'none';
+        // Применяем окрас поверх базы
+        document.getElementById('okras-preview').style.backgroundImage = `url('${item.img}')`;
         document.getElementById('selected-name').textContent = item.name;
         
         currentSelected = item;
@@ -203,11 +233,11 @@
             return;
         }
 
-        // Записываем окрас в профиль
+        // Сохраняем окрас
         profile.okras = currentSelected.img;
         localStorage.setItem('catProfile_' + currentId, JSON.stringify(profile));
 
-        // МГНОВЕННЫЙ ПЕРЕХОД В ПРОФИЛЬ
+        // Мгновенный переход в профиль
         window.location.href = 'profile.html';
     }
 </script>
