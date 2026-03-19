@@ -108,7 +108,6 @@
 </div>
 
 <script>
-    // БИБЛИОТЕКА ДАННЫХ (Строго сохранена)
     const lib = {
         body: {
             colors: [
@@ -156,7 +155,6 @@
         belly: { colors: [] }, mane: { colors: [] }, cheeks: { colors: [] }, ears: { colors: [] }, bangs: { colors: [] }
     };
 
-    // СЛОИ (Исправлен начальный хвост)
     let layers = [
         { id: 'body', name: 'Окрас тела', z: 1, img: lib.body.colors[0].img, movable: false },
         { id: 'eyes', name: 'Цвет глаз', z: 2, img: lib.eyes.colors[0].img, movable: false },
@@ -172,7 +170,6 @@
     let activeTab = 'body';
 
     function renderAll() {
-        // 1. Рендер вьюпорта
         const v = document.getElementById('viewport');
         v.innerHTML = '';
         [...layers].sort((a,b) => a.z - b.z).forEach(l => {
@@ -183,7 +180,6 @@
             v.appendChild(d);
         });
 
-        // 2. Рендер вкладок
         const t = document.getElementById('tabs');
         t.innerHTML = '';
         layers.forEach(l => {
@@ -195,7 +191,6 @@
             t.appendChild(b);
         });
 
-        // 3. Рендер контролов
         const controls = document.getElementById('controls');
         controls.innerHTML = ''; 
         const activeLayer = layers.find(l => l.id === activeTab);
@@ -216,7 +211,6 @@
                 card.innerHTML = `<div class="mini-img" style="background-image:url(${type.preview})"></div><div style="font-size:10px;">${type.name}</div>`;
                 card.onclick = () => { 
                     activeLayer.currentTypeId = type.id;
-                    // Автоматически ставим первый цвет этого вида
                     activeLayer.img = data.colorsByModel[type.id][0].img;
                     renderAll(); 
                 };
@@ -224,7 +218,7 @@
             });
             controls.appendChild(typeGrid);
 
-            // Окрасы хвоста
+            // Окрас хвоста
             const colorLabel = document.createElement('div');
             colorLabel.className = 'sub-label';
             colorLabel.innerText = 'Окрас хвоста';
@@ -237,10 +231,7 @@
                 const card = document.createElement('div');
                 card.className = `card ${activeLayer.img === color.img ? 'active' : ''}`;
                 card.innerHTML = `<div class="mini-img" style="background-image:url(${color.img})"></div><div style="font-size:10px;">${color.name}</div>`;
-                card.onclick = () => { 
-                    activeLayer.img = color.img; 
-                    renderAll(); 
-                };
+                card.onclick = () => { activeLayer.img = color.img; renderAll(); };
                 colorGrid.appendChild(card);
             });
             controls.appendChild(colorGrid);
@@ -263,7 +254,6 @@
             controls.appendChild(grid);
         }
 
-        // 4. Список перемещения
         const ui = document.getElementById('layers-ui');
         ui.innerHTML = '';
         [...layers].filter(l => l.movable).sort((a,b) => b.z - a.z).forEach(l => {
