@@ -37,7 +37,7 @@
             position: absolute; width: 100%; height: 100%;
             background-size: contain; background-repeat: no-repeat;
             background-position: center; pointer-events: none;
-            transition: z-index 0.1s; /* Плавное переключение */
+            transition: z-index 0.1s;
         }
 
         .selector-side {
@@ -111,8 +111,6 @@
 </div>
 
 <script>
-    // Скрытые слои (те, что нельзя двигать) начинаются с низкого Z
-    // Слои в массиве: чем выше индекс, тем выше Z
     let layers = [
         { id: 'body', name: 'Окрас тела', z: 1, img: 'https://psv4.userapi.com/s/v1/d2/YuXGokbsOuLU8Kj9jWXCv7kgpDvBOKitH2KKzGaVbVqqcUMnZX5yXYoTt-SIZ_7y73wwtS3CdnnO1PefrFRlv5fbmdcLH_cgW6Lr_T4s-xZ1tBc45XsBJwsd9rcBpNYvUBn0XBrSOKg2/IMG_8103.png', movable: false },
         { id: 'base', name: 'Моделька кота', z: 2, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
@@ -128,11 +126,15 @@
         body: [
             { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/YuXGokbsOuLU8Kj9jWXCv7kgpDvBOKitH2KKzGaVbVqqcUMnZX5yXYoTt-SIZ_7y73wwtS3CdnnO1PefrFRlv5fbmdcLH_cgW6Lr_T4s-xZ1tBc45XsBJwsd9rcBpNYvUBn0XBrSOKg2/IMG_8103.png' },
             { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/1JBuWj7BxdwpksiW2e3415tfG8m6s3XHIv2ed8o841j0w3Wm-FxQM0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8078.png' },
-            { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/8G22l9309mO64T1fE6p1_7H-fK0Y_z-oA7R3lC9v0P9u2S3_v0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8080.png' },
-            { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/X29_l9309mO64T1fE6p1_7H-fK0Y_z-oA7R3lC9v0P9u2S3_v0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8081.png' },
-            { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/P29_l9309mO64T1fE6p1_7H-fK0Y_z-oA7R3lC9v0P9u2S3_v0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8083.png' },
-            { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/k29_l9309mO64T1fE6p1_7H-fK0Y_z-oA7R3lC9v0P9u2S3_v0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8084.png' },
-            { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' }
+            { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/BJPWf67r3d_4me3KpEodEA6y2ZZbjumpAwvsHW_T_RIB4kHmN_rFcRwyte444U0m99toYuhyy2MTMni0OTg5QD98Faf_XDDepz325f2nZuGizjZK2mGYcWx1LVKdIic9AajPaJ7NLiHU/IMG_8080.png' },
+            { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/1OcGOFhH7RuKF7xq4VvyRwtdG52uTS_Zwf_lDAdimp0a_7xIt038Ixh48XToBmt2d8Gd6K_wAtBYkG8myFlI_oX0h68h6zSMUJ456doqGarB--JyzdTye3H4cn8DM0TGQJOlWhsPmBtz/IMG_8079.png' },
+            { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/SdP8pap17v1tsyV_6x9gxJG0scmEjrMAA0v37Hnfr289PtqXOCq-vnQtHfn4MDn-rAX348zb_QAbU8wrdsZNmRPEmB9bXJXgZvk0euPwsUBUmfpxACTUvbtkUgQC7HLaKg2BGW_5fXM4/IMG_8081.png' },
+            { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/YmQVM4-0mo_aO_VHXkUYLWJaAt4InFN8cSyuOi4J8ymviFLXLwXQp0r4t0uIxA-Exys5g-gT61JgAVq1-WczmMLT9RjiTySvYePneWCBi7GszqRB1kkvU_k48H5Kazou29Zda6Uashaa/IMG_8084.png' },
+            { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/cE7ERL5kdNzMqa-KEB6V1pAB8rOzFrQ7in85ljr2CjbD6NmKLOz-5dUFJ1J0s4I9f7_7LRK81zw23YSme1R-v_9rkJX2fgbogDFk6WJLf5oz2zgPViT-2K4WNqx1_QfoRzABIu3GT15E/IMG_8083.png' },
+            { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/YJ10qdVGAhJZQMXaz-oypYuG4vMAzPG8dSj50XLYPaWgky_Js2EC6KNd-4v5aPNP1_cCfPJfIGzhk4oG_C8QeIe7jlXaF-Cfydo2Og5bUnCFbCv1JvRSLmQY9JEGta_dImAmo6WAFDC1/IMG_8082.png' },
+            { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' },
+            { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/3b3DZeajKh2NkGO8fwmTa0YM0vmWYJTucEj9FgQvybjCZo1r2WJS9-R9-NCoEkpIVQt7gLAEiF-u8vr-Kd3l4GA-Efk7Qli0TJ_VOhMSQ9mScGL64kVrIJJ-6jRwFUkTwpirEOBt6bzv/IMG_8087.png' },
+            { name: 'Темно-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/9vKVXwkCdimh884acxWCgVR4TZC_C1YPVhHaovRDF7PcYpZKMmCJfuq-ZWMFNv8DnilH55KyZKNbz1S2MexJjNNegW_JrJ14b5atlYCvQHMKCx6T46R_QYo7lBm7b8YQYAL4tce4QOHC/IMG_8085.png' }
         ],
         tail: [], belly: [], mane: [], cheeks: [], ears: [], bangs: []
     };
@@ -140,7 +142,6 @@
     let activeTab = 'body';
 
     function renderAll() {
-        // 1. Отрисовка кота
         const v = document.getElementById('viewport');
         v.innerHTML = '';
         layers.forEach(l => {
@@ -151,7 +152,6 @@
             v.appendChild(d);
         });
 
-        // 2. Вкладки
         const t = document.getElementById('tabs');
         t.innerHTML = '';
         layers.forEach(l => {
@@ -163,7 +163,6 @@
             t.appendChild(b);
         });
 
-        // 3. Выбор окрасов
         const i = document.getElementById('items');
         i.innerHTML = '';
         (lib[activeTab] || []).forEach(item => {
@@ -174,7 +173,6 @@
             i.appendChild(card);
         });
 
-        // 4. Список перемещаемых слоев (БЕЗ модельки и окраса тела)
         const ui = document.getElementById('layers-ui');
         ui.innerHTML = '';
         [...layers].filter(l => l.movable).sort((a,b) => b.z - a.z).forEach(l => {
@@ -191,7 +189,6 @@
         });
     }
 
-    // Логика перемещения: меняем Z и перерисовываем
     function moveLayer(id, dir) {
         const target = layers.find(l => l.id === id);
         target.z += dir;
