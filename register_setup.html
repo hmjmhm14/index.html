@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CBR CATS - Создание персонажа</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; min-height: 100%; font-family: sans-serif;
+            color: white; background-color: black; display: flex; align-items: center; justify-content: center;
+        }
+        .forest-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://i.ibb.co/mC4mD3cw/image.jpg') no-repeat center center;
+            background-size: cover; z-index: 1;
+        }
+        .content-wrapper {
+            position: relative; width: 800px; background-color: rgba(0, 0, 0, 0.7); 
+            z-index: 2; display: flex; flex-direction: column; align-items: center;
+            padding: 30px; box-sizing: border-box; border-radius: 15px;
+        }
+        .title-top {
+            font-size: 22px; text-transform: uppercase; letter-spacing: 2px;
+            border-bottom: 1px solid white; padding-bottom: 5px; margin-bottom: 30px;
+        }
+        .main-grid { width: 100%; display: flex; justify-content: center; gap: 40px; }
+        .tribes-section { width: 250px; }
+        .section-label {
+            font-size: 16px; text-decoration: underline; margin-bottom: 15px;
+            display: block; text-transform: uppercase;
+        }
+        .tribe-option {
+            font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+        }
+        .tribe-option input { width: 15px; height: 15px; cursor: pointer; }
+        .character-section { width: 300px; border-left: 1px solid rgba(255, 255, 255, 0.3); padding-left: 40px; }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { font-size: 13px; display: block; margin-bottom: 4px; text-transform: uppercase; }
+        .input-group input, .input-group select {
+            background: transparent; border: 1px solid white; color: white;
+            padding: 6px; width: 100%; box-sizing: border-box; border-radius: 5px; font-size: 14px;
+        }
+        .final-btn {
+            background: transparent; border: 1px solid white; color: white;
+            padding: 8px 25px; font-size: 15px; cursor: pointer; margin-top: 15px;
+            border-radius: 5px; transition: 0.3s; width: 100%;
+        }
+        .final-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        select option { background: black; color: white; }
+    </style>
+</head>
+<body>
+    <div class="forest-background"></div>
+    <div class="content-wrapper">
+        <div class="title-top">ХРАНИТЕЛИ ЛЕСА</div>
+        <div class="main-grid">
+            <div class="tribes-section">
+                <span class="section-label">ВЫБОР ПЛЕМЕНИ</span>
+                <label class="tribe-option">Клан Луны <input type="radio" name="tribe" value="Клан Луны"></label>
+                <label class="tribe-option">Клан Солнца <input type="radio" name="tribe" value="Клан Солнца"></label>
+                <label class="tribe-option">Клан Водопада <input type="radio" name="tribe" value="Клан Водопада"></label>
+                <label class="tribe-option">Одиночки <input type="radio" name="tribe" value="Одиночки"></label>
+            </div>
+            <div class="character-section">
+                <span class="section-label">ПЕРСОНАЖ</span>
+                <div class="input-group"><label>ИМЯ</label><input type="text" id="cat-name"></div>
+                <div class="input-group"><label>ПОЛ</label>
+                    <select id="cat-gender"><option value="кот">кот</option><option value="кошка">кошка</option></select>
+                </div>
+                <div class="input-group"><label>ММ/ДД/ГГ</label><input type="text" id="cat-date" placeholder="01/01/2026"></div>
+                <div class="input-group"><label>КЛИЧКИ</label><input type="text" id="cat-nickname"></div>
+                <button class="final-btn" onclick="saveAndNext()">ЗАРЕГИСТРИР!</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function saveAndNext() {
+            const tribe = document.querySelector('input[name="tribe"]:checked')?.value;
+            const name = document.getElementById('cat-name').value;
+            const currentUserId = localStorage.getItem('userId');
+
+            if (tribe && name) {
+                const profile = {
+                    tribe: tribe,
+                    name: name,
+                    gender: document.getElementById('cat-gender').value,
+                    birthDate: document.getElementById('cat-date').value,
+                    id: currentUserId,
+                    nicknames: document.getElementById('cat-nickname').value.split(',').map(s => s.trim()).filter(s => s)
+                };
+                
+                // Ключ сохранения привязан к ID
+                localStorage.setItem('catProfile_' + currentUserId, JSON.stringify(profile));
+                window.location.href = 'profile.html';
+            } else {
+                alert("Выберите племя и имя!");
+            }
+        }
+    </script>
+</body>
+</html>
