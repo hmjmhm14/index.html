@@ -135,8 +135,8 @@
         },
         tail: {
             types: [
-                { id: 't1', name: 'Обычный хвост', preview: 'https://psv4.userapi.com/s/v1/d2/Km6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8105.png' },
-                { id: 't2', name: 'Длинный хвост', preview: 'https://psv4.userapi.com/s/v1/d2/2dBfQNWx4PLGvkHGvHmfJT_1omotPf4gWqPunSCXzbTHEK0gdUUZNTSqylcwhlf4p0TT4qjvbjsI8AsPmemMTHh23F5M0XY3szVTfxPAoYu5VtRvNXhAd8sd0NNQxyYEb7rhk2PSQtV2/IMG_8156.png' }
+                { id: 't1', name: 'Обычный хвост', model: 'https://psv4.userapi.com/s/v1/d2/Km6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8105.png' },
+                { id: 't2', name: 'Длинный хвост', model: 'https://psv4.userapi.com/s/v1/d2/2dBfQNWx4PLGvkHGvHmfJT_1omotPf4gWqPunSCXzbTHEK0gdUUZNTSqylcwhlf4p0TT4qjvbjsI8AsPmemMTHh23F5M0XY3szVTfxPAoYu5VtRvNXhAd8sd0NNQxyYEb7rhk2PSQtV2/IMG_8156.png' }
             ],
             colorsByModel: {
                 t1: [
@@ -170,11 +170,16 @@
         belly: { colors: [] }, mane: { colors: [] }, cheeks: { colors: [] }, ears: { colors: [] }, bangs: { colors: [] }
     };
 
+    // НАСТРОЙКА СЛОЕВ: Контуры (модельки) всегда имеют z-index выше чем их окрасы
     let layers = [
         { id: 'body', name: 'Окрас тела', z: 1, img: lib.body.colors[0].img, movable: false },
         { id: 'base', name: 'Моделька кота', z: 2, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
         { id: 'eyes', name: 'Цвет глаз', z: 3, img: lib.eyes.colors[0].img, movable: false },
-        { id: 'tail', name: 'Хвост', z: 10, img: lib.tail.colorsByModel.t1[0].img, movable: true, currentTypeId: 't1' },
+        
+        // ХВОСТ РАЗБИТ НА 2 ЧАСТИ ДЛЯ ПРАВИЛЬНОГО ОТОБРАЖЕНИЯ
+        { id: 'tail_color', name: 'Окрас хвоста', z: 9, img: lib.tail.colorsByModel.t1[0].img, movable: true },
+        { id: 'tail', name: 'Хвост', z: 10, img: lib.tail.types[0].model, movable: true, currentTypeId: 't1' },
+        
         { id: 'belly', name: 'Живот', z: 11, img: '', movable: true },
         { id: 'mane', name: 'Грива', z: 12, img: '', movable: true },
         { id: 'cheeks', name: 'Щеки', z: 13, img: '', movable: true },
@@ -188,17 +193,19 @@
         const v = document.getElementById('viewport');
         v.innerHTML = '';
         [...layers].sort((a,b) => a.z - b.z).forEach(l => {
+            if(!l.img) return;
             const d = document.createElement('div');
             d.className = 'layer';
             d.style.zIndex = l.z;
-            d.style.backgroundImage = l.img ? `url(${l.img})` : 'none';
+            d.style.backgroundImage = `url(${l.img})`;
             v.appendChild(d);
         });
 
         const t = document.getElementById('tabs');
         t.innerHTML = '';
         layers.forEach(l => {
-            if(l.id === 'base') return; 
+            // Исключаем системные слои из вкладок
+            if(l.id === 'base' || l.id === 'tail_color') return; 
             const b = document.createElement('button');
             b.className = `tab-btn ${activeTab === l.id ? 'active' : ''}`;
             b.innerText = l.name;
@@ -209,9 +216,9 @@
         const controls = document.getElementById('controls');
         controls.innerHTML = ''; 
         const activeLayer = layers.find(l => l.id === activeTab);
-        const data = lib[activeTab];
-
+        
         if (activeTab === 'tail') {
+            const data = lib.tail;
             const typeLabel = document.createElement('div');
             typeLabel.className = 'sub-label';
             typeLabel.innerText = 'Вид хвоста';
@@ -222,10 +229,13 @@
             data.types.forEach(type => {
                 const card = document.createElement('div');
                 card.className = `card ${activeLayer.currentTypeId === type.id ? 'active' : ''}`;
-                card.innerHTML = `<div class="mini-img" style="background-image:url(${type.preview})"></div><div style="font-size:10px;">${type.name}</div>`;
+                card.innerHTML = `<div class="mini-img" style="background-image:url(${type.model})"></div><div style="font-size:10px;">${type.name}</div>`;
                 card.onclick = () => { 
                     activeLayer.currentTypeId = type.id;
-                    activeLayer.img = data.colorsByModel[type.id][0].img;
+                    activeLayer.img = type.model; // Обновляем саму модельку
+                    // Синхронизируем окрас хвоста (ставим первый доступный цвет)
+                    const colorLayer = layers.find(la => la.id === 'tail_color');
+                    colorLayer.img = data.colorsByModel[type.id][0].img;
                     renderAll(); 
                 };
                 typeGrid.appendChild(card);
@@ -239,17 +249,19 @@
 
             const colorGrid = document.createElement('div');
             colorGrid.className = 'grid';
+            const colorLayer = layers.find(la => la.id === 'tail_color');
             const currentColors = data.colorsByModel[activeLayer.currentTypeId] || [];
             currentColors.forEach(color => {
                 const card = document.createElement('div');
-                card.className = `card ${activeLayer.img === color.img ? 'active' : ''}`;
+                card.className = `card ${colorLayer.img === color.img ? 'active' : ''}`;
                 card.innerHTML = `<div class="mini-img" style="background-image:url(${color.img})"></div><div style="font-size:10px;">${color.name}</div>`;
-                card.onclick = () => { activeLayer.img = color.img; renderAll(); };
+                card.onclick = () => { colorLayer.img = color.img; renderAll(); };
                 colorGrid.appendChild(card);
             });
             controls.appendChild(colorGrid);
 
-        } else if (data && data.colors && data.colors.length > 0) {
+        } else if (lib[activeTab] && lib[activeTab].colors) {
+            const data = lib[activeTab];
             const label = document.createElement('div');
             label.className = 'sub-label';
             label.innerText = 'Доступные цвета';
@@ -269,7 +281,7 @@
 
         const ui = document.getElementById('layers-ui');
         ui.innerHTML = '';
-        [...layers].filter(l => l.movable).sort((a,b) => b.z - a.z).forEach(l => {
+        [...layers].filter(l => l.movable && l.id !== 'tail_color').sort((a,b) => b.z - a.z).forEach(l => {
             const item = document.createElement('div');
             item.className = 'layer-item';
             item.innerHTML = `
@@ -286,6 +298,11 @@
     function moveLayer(id, dir) {
         const target = layers.find(l => l.id === id);
         target.z += dir;
+        // Если двигаем хвост, двигаем его окрас вместе с ним
+        if(id === 'tail') {
+            const colorLayer = layers.find(la => la.id === 'tail_color');
+            colorLayer.z = target.z - 0.1; // Всегда чуть ниже основного хвоста
+        }
         renderAll();
     }
 
