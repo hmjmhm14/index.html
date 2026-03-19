@@ -16,13 +16,36 @@
         .header-profile { border-bottom: 1px solid rgba(255, 255, 255, 0.3); padding-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
         .cat-name-big { font-size: 32px; text-transform: uppercase; }
         .cat-id { font-size: 18px; color: #aaa; }
-        .main-content { display: flex; gap: 30px; }
-        .cat-avatar { width: 300px; height: 300px; border: 1px solid white; display: flex; align-items: center; justify-content: center; }
-        .info-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* ГЛАВНЫЙ КОНТЕЙНЕР: теперь с реверсом, чтобы данные были слева */
+        .main-content { 
+            display: flex; 
+            flex-direction: row-reverse; /* Это меняет блоки местами */
+            gap: 30px; 
+        }
+
+        .cat-avatar { 
+            width: 300px; 
+            height: 300px; 
+            border: 1px solid white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .info-grid { 
+            flex: 1; 
+            display: grid; 
+            grid-template-columns: 1fr; /* В колонку слева смотрится аккуратнее */
+            gap: 15px; 
+        }
+        
         .info-item { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border-left: 3px solid white; }
         .info-label { font-size: 12px; text-transform: uppercase; color: #aaa; }
         .info-value { font-size: 18px; }
-        .btn-back { align-self: flex-start; background: transparent; border: 1px solid white; color: white; padding: 10px 20px; cursor: pointer; text-decoration: none; }
+        .btn-back { align-self: flex-start; background: transparent; border: 1px solid white; color: white; padding: 10px 20px; cursor: pointer; text-decoration: none; margin-bottom: 10px; }
+        .btn-back:hover { background: white; color: black; }
     </style>
 </head>
 <body>
@@ -34,6 +57,7 @@
         </div>
         <div class="main-content">
             <div class="cat-avatar">ОКРАС</div>
+            
             <div class="info-grid">
                 <div class="info-item"><div class="info-label">Племя</div><div class="info-value" id="display-tribe">-</div></div>
                 <div class="info-item"><div class="info-label">Пол</div><div class="info-value" id="display-gender">-</div></div>
@@ -44,8 +68,8 @@
     </div>
     <script>
         function logout() {
-            localStorage.removeItem('userEmail');
             localStorage.removeItem('userId');
+            // Мы не удаляем базу аккаунтов, только текущую сессию
         }
 
         window.onload = function() {
