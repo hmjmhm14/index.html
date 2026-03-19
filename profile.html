@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CBR CATS - Мой Кот</title>
+    <title>CBR CATS - Личный кабинет</title>
     <style>
         body, html {
             margin: 0; padding: 0; min-height: 100%; font-family: sans-serif; color: white;
@@ -10,66 +10,100 @@
             background-size: cover; display: flex; justify-content: center; padding-top: 50px;
         }
         .profile-container {
-            width: 900px; background-color: rgba(0, 0, 0, 0.7); border-radius: 15px; padding: 30px;
+            width: 1000px; background-color: rgba(0, 0, 0, 0.8); border-radius: 20px; padding: 30px;
             box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .header-profile { border-bottom: 1px solid rgba(255, 255, 255, 0.3); padding-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .cat-name-big { font-size: 32px; text-transform: uppercase; }
+        .header-profile { 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3); 
+            padding-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end; 
+        }
+        .cat-name-big { font-size: 32px; text-transform: uppercase; letter-spacing: 2px; }
         .cat-id { font-size: 18px; color: #aaa; }
-        
-        /* ГЛАВНЫЙ КОНТЕЙНЕР: теперь с реверсом, чтобы данные были слева */
-        .main-content { 
-            display: flex; 
-            flex-direction: row-reverse; /* Это меняет блоки местами */
-            gap: 30px; 
+
+        /* ОСНОВНАЯ СЕТКА: Лево (Профиль) и Право (Меню) */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px; /* Левая часть шире, правая под кнопки */
+            gap: 30px;
         }
 
-        .cat-avatar { 
-            width: 300px; 
-            height: 300px; 
-            border: 1px solid white; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: rgba(255, 255, 255, 0.05);
+        /* ЛЕВАЯ ЧАСТЬ: Данные персонажа */
+        .left-side { display: flex; flex-direction: column; gap: 20px; }
+        .info-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .info-item { 
+            background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; 
+            border-left: 4px solid #fff; 
         }
-
-        .info-grid { 
-            flex: 1; 
-            display: grid; 
-            grid-template-columns: 1fr; /* В колонку слева смотрится аккуратнее */
-            gap: 15px; 
-        }
-        
-        .info-item { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border-left: 3px solid white; }
-        .info-label { font-size: 12px; text-transform: uppercase; color: #aaa; }
+        .info-label { font-size: 11px; text-transform: uppercase; color: #888; margin-bottom: 5px; }
         .info-value { font-size: 18px; }
-        .btn-back { align-self: flex-start; background: transparent; border: 1px solid white; color: white; padding: 10px 20px; cursor: pointer; text-decoration: none; margin-bottom: 10px; }
-        .btn-back:hover { background: white; color: black; }
+
+        /* ПРАВАЯ ЧАСТЬ: Игровое меню */
+        .right-menu { display: flex; flex-direction: column; gap: 12px; }
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 18px;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .menu-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: translateX(-5px);
+        }
+        .menu-btn.active { border-color: #fff; background: rgba(255, 255, 255, 0.15); }
+
+        .btn-back { 
+            align-self: flex-start; background: transparent; border: 1px solid white; 
+            color: white; padding: 8px 15px; cursor: pointer; text-decoration: none; font-size: 12px;
+        }
+        .cat-avatar-small {
+            width: 100%; height: 200px; border: 1px solid rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 10px; background: rgba(0,0,0,0.4);
+        }
     </style>
 </head>
 <body>
     <div class="profile-container">
-        <a href="menu_regist.html" class="btn-back" onclick="logout()">← ВЫХОД</a>
+        <a href="menu_regist.html" class="btn-back" onclick="logout()">← ВЫЙТИ ИЗ АККАУНТА</a>
+        
         <div class="header-profile">
-            <div class="cat-name-big" id="display-name">...</div>
+            <div class="cat-name-big" id="display-name">Загрузка...</div>
             <div class="cat-id">ID: <span id="display-id">0.00</span></div>
         </div>
-        <div class="main-content">
-            <div class="cat-avatar">ОКРАС</div>
-            
-            <div class="info-grid">
-                <div class="info-item"><div class="info-label">Племя</div><div class="info-value" id="display-tribe">-</div></div>
-                <div class="info-item"><div class="info-label">Пол</div><div class="info-value" id="display-gender">-</div></div>
-                <div class="info-item"><div class="info-label">Дата</div><div class="info-value" id="display-date">-</div></div>
-                <div class="info-item"><div class="info-label">Клички</div><div class="info-value" id="display-nicknames">-</div></div>
+
+        <div class="main-grid">
+            <div class="left-side">
+                <div class="cat-avatar-small">ОКРАС / ПЕРСОНАЖ</div>
+                <div class="info-grid">
+                    <div class="info-item"><div class="info-label">Племя</div><div class="info-value" id="display-tribe">-</div></div>
+                    <div class="info-item"><div class="info-label">Пол</div><div class="info-value" id="display-gender">-</div></div>
+                    <div class="info-item"><div class="info-label">Дата рождения</div><div class="info-value" id="display-date">-</div></div>
+                    <div class="info-item"><div class="info-label">Известные клички</div><div class="info-value" id="display-nicknames">-</div></div>
+                </div>
+            </div>
+
+            <div class="right-menu">
+                <a href="#" class="menu-btn active">Игровая</a>
+                <a href="#" class="menu-btn">Группы / Чаты</a>
+                <a href="#" class="menu-btn">ЛС (Сообщения)</a>
+                <a href="#" class="menu-btn">Новости</a>
             </div>
         </div>
     </div>
+
     <script>
         function logout() {
             localStorage.removeItem('userId');
-            // Мы не удаляем базу аккаунтов, только текущую сессию
         }
 
         window.onload = function() {
