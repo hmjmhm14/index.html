@@ -217,7 +217,6 @@
                 card.innerHTML = `<div class="mini-img" style="background-image:url(${type.preview})"></div><div style="font-size:10px;">${type.name}</div>`;
                 card.onclick = () => { 
                     activeLayer.currentTypeId = type.id;
-                    // При смене вида автоматически ставим первый окрас этого вида
                     activeLayer.img = data.colorsByModel[type.id][0].img;
                     renderAll(); 
                 };
@@ -237,7 +236,6 @@
             });
             controls.appendChild(colorGrid);
         } else {
-            // Обычное поведение для других вкладок
             if (data.colors) {
                 controls.innerHTML += `<div class="sub-label">Доступные цвета</div>`;
                 const grid = document.createElement('div');
