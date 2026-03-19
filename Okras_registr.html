@@ -20,12 +20,11 @@
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: grid;
-            grid-template-columns: 1fr 350px; /* Слева предпросмотр, справа список */
+            grid-template-columns: 1fr 350px;
             overflow: hidden;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        /* ЛЕВАЯ ЧАСТЬ - ПРЕДПРОСМОТР */
         .preview-side {
             display: flex;
             flex-direction: column;
@@ -34,7 +33,6 @@
             background: rgba(255, 255, 255, 0.03);
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             padding: 20px;
-            position: relative;
         }
 
         .cat-display {
@@ -59,7 +57,6 @@
             font-weight: bold;
         }
 
-        /* ПРАВАЯ ЧАСТЬ - ВЫБОР */
         .selector-side {
             display: flex;
             flex-direction: column;
@@ -85,7 +82,6 @@
             padding-right: 10px;
         }
 
-        /* Карточка окраса */
         .okras-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -116,7 +112,6 @@
             background-size: cover;
         }
 
-        /* Кнопка сохранения */
         .save-btn {
             margin-top: 25px;
             background: #4caf50;
@@ -130,9 +125,8 @@
             transition: 0.3s;
         }
 
-        .save-btn:hover { background: #45a049; letter-spacing: 1px; }
+        .save-btn:hover { background: #45a049; }
 
-        /* Кастомный скроллбар */
         .scroll-area::-webkit-scrollbar { width: 5px; }
         .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
     </style>
@@ -140,37 +134,31 @@
 <body>
 
 <div class="editor-container">
-    
     <div class="preview-side">
         <div class="cat-display" id="cat-preview">
-            <span style="color: #444;" id="placeholder-text">ВЫБЕРИТЕ ОКРАС</span>
+            <span style="color: #666;" id="placeholder-text">ВЫБЕРИТЕ ОКРАС</span>
         </div>
-        <div class="preview-label" id="selected-name">ВЫБОР КОТА</div>
+        <div class="preview-label" id="selected-name">ОКРАС</div>
     </div>
 
     <div class="selector-side">
         <div class="selector-title">Доступные окрасы</div>
-        
         <div class="scroll-area" id="okras-list">
             </div>
-
-        <button class="save-btn" onclick="confirmOkras()">Завершить создание →</button>
+        <button class="save-btn" onclick="confirmOkras()">Завершить создание</button>
     </div>
-
 </div>
 
 <script>
-    // Массив твоих окрасов (можешь добавлять ссылки на свои картинки)
+    // Массив твоих окрасов
     const okrasData = [
-        { id: 'gray_tabby', name: 'Серый Полосатый', img: 'https://i.ibb.co/qYhV1ny8/image.jpg' },
-        { id: 'black', name: 'Угольно-черный', img: 'https://i.ibb.co/RGXR1DyG/image.jpg' },
-        { id: 'ginger', name: 'Рыжее пламя', img: 'https://i.ibb.co/q2K768f/spooky-forest-mystery-horror-beauty-nature-generated-by-ai.jpg' },
-        { id: 'white', name: 'Белоснежный', img: 'https://via.placeholder.com/400x400/ffffff/000000?text=White+Cat' }
+        { id: 'gray', name: 'Серый', img: 'https://i.ibb.co/qYhV1ny8/image.jpg' },
+        { id: 'black', name: 'Черный', img: 'https://i.ibb.co/RGXR1DyG/image.jpg' },
+        { id: 'forest', name: 'Лесной', img: 'https://i.ibb.co/q2K768f/spooky-forest-mystery-horror-beauty-nature-generated-by-ai.jpg' }
     ];
 
     let currentSelected = null;
 
-    // Генерация списка
     const listContainer = document.getElementById('okras-list');
     okrasData.forEach(item => {
         const card = document.createElement('div');
@@ -184,12 +172,9 @@
     });
 
     function selectOkras(item, element) {
-        // Убираем активный класс у других
         document.querySelectorAll('.okras-card').forEach(c => c.classList.remove('active'));
-        // Добавляем текущему
         element.classList.add('active');
         
-        // Обновляем предпросмотр
         const preview = document.getElementById('cat-preview');
         preview.style.backgroundImage = `url('${item.img}')`;
         document.getElementById('placeholder-text').style.display = 'none';
@@ -200,24 +185,29 @@
 
     function confirmOkras() {
         if (!currentSelected) {
-            alert("Сначала выбери окрас для своего кота!");
+            alert("Пожалуйста, выберите окрас!");
             return;
         }
 
         const currentId = localStorage.getItem('userId');
         if (!currentId) {
-            alert("Ошибка ID! Перезайдите в систему.");
+            window.location.href = 'menu_regist.html';
             return;
         }
 
-        // Получаем профиль, добавляем в него окрас и сохраняем
         let profile = JSON.parse(localStorage.getItem('catProfile_' + currentId));
-        profile.okras = currentSelected.img; // Сохраняем ссылку на картинку
-        profile.okrasName = currentSelected.name;
+        
+        if (!profile) {
+            alert("Сначала заполните анкету персонажа!");
+            window.location.href = 'register_setup.html';
+            return;
+        }
 
+        // Записываем окрас в профиль
+        profile.okras = currentSelected.img;
         localStorage.setItem('catProfile_' + currentId, JSON.stringify(profile));
 
-        alert("Окрас успешно выбран! Добро пожаловать в игру.");
+        // МГНОВЕННЫЙ ПЕРЕХОД В ПРОФИЛЬ
         window.location.href = 'profile.html';
     }
 </script>
