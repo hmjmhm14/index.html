@@ -181,9 +181,10 @@
     let activeTab = 'body';
 
     function renderAll() {
+        // Рендер кота
         const v = document.getElementById('viewport');
         v.innerHTML = '';
-        layers.sort((a,b) => a.z - b.z).forEach(l => {
+        [...layers].sort((a,b) => a.z - b.z).forEach(l => {
             const d = document.createElement('div');
             d.className = 'layer';
             d.style.zIndex = l.z;
@@ -191,6 +192,7 @@
             v.appendChild(d);
         });
 
+        // Рендер вкладок
         const t = document.getElementById('tabs');
         t.innerHTML = '';
         layers.forEach(l => {
@@ -202,20 +204,28 @@
             t.appendChild(b);
         });
 
+        // Рендер контролов выбора
         const controls = document.getElementById('controls');
-        controls.innerHTML = '';
+        controls.innerHTML = ''; 
         const activeLayer = layers.find(l => l.id === activeTab);
         const data = lib[activeTab];
 
         if (activeTab === 'tail') {
-            controls.innerHTML += `<div class="sub-label">Вид хвоста</div>`;
+            // Заголовок выбора Вида
+            const typeLabel = document.createElement('div');
+            typeLabel.className = 'sub-label';
+            typeLabel.innerText = 'Вид хвоста';
+            controls.appendChild(typeLabel);
+
+            // Сетка видов
             const typeGrid = document.createElement('div');
             typeGrid.className = 'grid';
             data.types.forEach(type => {
                 const card = document.createElement('div');
                 card.className = `card ${activeLayer.currentTypeId === type.id ? 'active' : ''}`;
                 card.innerHTML = `<div class="mini-img" style="background-image:url(${type.preview})"></div><div style="font-size:10px;">${type.name}</div>`;
-                card.onclick = () => { 
+                card.onclick = (e) => { 
+                    e.stopPropagation();
                     activeLayer.currentTypeId = type.id;
                     activeLayer.img = data.colorsByModel[type.id][0].img;
                     renderAll(); 
@@ -224,33 +234,48 @@
             });
             controls.appendChild(typeGrid);
 
-            controls.innerHTML += `<div class="sub-label">Окрас хвоста</div>`;
+            // Заголовок выбора Окраса
+            const colorLabel = document.createElement('div');
+            colorLabel.className = 'sub-label';
+            colorLabel.innerText = 'Окрас хвоста';
+            controls.appendChild(colorLabel);
+
+            // Сетка окрасов
             const colorGrid = document.createElement('div');
             colorGrid.className = 'grid';
-            data.colorsByModel[activeLayer.currentTypeId].forEach(color => {
+            const currentColors = data.colorsByModel[activeLayer.currentTypeId] || [];
+            currentColors.forEach(color => {
                 const card = document.createElement('div');
                 card.className = `card ${activeLayer.img === color.img ? 'active' : ''}`;
                 card.innerHTML = `<div class="mini-img" style="background-image:url(${color.img})"></div><div style="font-size:10px;">${color.name}</div>`;
-                card.onclick = () => { activeLayer.img = color.img; renderAll(); };
+                card.onclick = (e) => { 
+                    e.stopPropagation();
+                    activeLayer.img = color.img; 
+                    renderAll(); 
+                };
                 colorGrid.appendChild(card);
             });
             controls.appendChild(colorGrid);
-        } else {
-            if (data.colors) {
-                controls.innerHTML += `<div class="sub-label">Доступные цвета</div>`;
-                const grid = document.createElement('div');
-                grid.className = 'grid';
-                data.colors.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = `card ${activeLayer.img === item.img ? 'active' : ''}`;
-                    card.innerHTML = `<div class="mini-img" style="background-image:url(${item.img})"></div><div style="font-size:10px;">${item.name}</div>`;
-                    card.onclick = () => { activeLayer.img = item.img; renderAll(); };
-                    grid.appendChild(card);
-                });
-                controls.appendChild(grid);
-            }
+
+        } else if (data.colors && data.colors.length > 0) {
+            const label = document.createElement('div');
+            label.className = 'sub-label';
+            label.innerText = 'Доступные цвета';
+            controls.appendChild(label);
+
+            const grid = document.createElement('div');
+            grid.className = 'grid';
+            data.colors.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `card ${activeLayer.img === item.img ? 'active' : ''}`;
+                card.innerHTML = `<div class="mini-img" style="background-image:url(${item.img})"></div><div style="font-size:10px;">${item.name}</div>`;
+                card.onclick = () => { activeLayer.img = item.img; renderAll(); };
+                grid.appendChild(card);
+            });
+            controls.appendChild(grid);
         }
 
+        // Рендер слоев (UI перемещения)
         const ui = document.getElementById('layers-ui');
         ui.innerHTML = '';
         [...layers].filter(l => l.movable).sort((a,b) => b.z - a.z).forEach(l => {
@@ -281,7 +306,7 @@
         window.location.href = 'profile.html';
     }
 
-    renderAll();
+    window.onload = renderAll;
 </script>
 </body>
 </html>
