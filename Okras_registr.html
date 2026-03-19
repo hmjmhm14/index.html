@@ -117,7 +117,7 @@
                 { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/1OcGOFhH7RuKF7xq4VvyRwtdG52uTS_Zwf_lDAdimp0a_7xIt038Ixh48XToBmt2d8Gd6K_wAtBYkG8myFlI_oX0h68h6zSMUJ456doqGarB--JyzdTye3H4cn8DM0TGQJOlWhsPmBtz/IMG_8079.png' },
                 { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/SdP8pap17v1tsyV_6x9gxJG0scmEjrMAA0v37Hnfr289PtqXOCq-vnQtHfn4MDn-rAX348zb_QAbU8wrdsZNmRPEmB9bXJXgZvk0euPwsUBUmfpxACTUvbtkUgQC7HLaKg2BGW_5fXM4/IMG_8081.png' },
                 { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/YmQVM4-0mo_aO_VHXkUYLWJaAt4InFN8cSyuOi4J8ymviFLXLwXQp0r4t0uIxA-Exys5g-gT61JgAVq1-WczmMLT9RjiTySvYePneWCBi7GszqRB1kkvU_k48H5Kazou29Zda6Uashaa/IMG_8084.png' },
-                { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/cE7ERL5kdNzMqa-KEB6V1pAB8rOzFr (1).htmlOzFrQ7in85ljr2CjbD6NmKLOz-5dUFJ1J0s4I9f7_7LRK81zw23YSme1R-v_9rkJX2fgbogDFk6WJLf5oz2zgPViT-2K4WNqx1_QfoRzABIu3GT15E/IMG_8083.png' },
+                { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/cE7ERL5kdNzMqa-KEB6V1pAB8rOzFrQ7in85ljr2CjbD6NmKLOz-5dUFJ1J0s4I9f7_7LRK81zw23YSme1R-v_9rkJX2fgbogDFk6WJLf5oz2zgPViT-2K4WNqx1_QfoRzABIu3GT15E/IMG_8083.png' },
                 { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/YJ10qdVGAhJZQMXaz-oypYuG4vMAzPG8dSj50XLYPaWgky_Js2EC6KNd-4v5aPNP1_cCfPJfIGzhk4oG_C8QeIe7jlXaF-Cfydo2Og5bUnCFbCv1JvRSLmQY9JEGta_dImAmo6WAFDC1/IMG_8082.png' },
                 { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' },
                 { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/3b3DZeajKh2NkGO8fwmTa0YM0vmWYJTucEj9FgQvybjCZo1r2WJS9-R9-NCoEkpIVQt7gLAEiF-u8vr-Kd3l4GA-Efk7Qli0TJ_VOhMSQ9mScGL64kVrIJJ-6jRwFUkTwpirEOBt6bzv/IMG_8087.png' },
@@ -160,8 +160,9 @@
 
     let layers = [
         { id: 'body', name: 'Окрас тела', z: 1, img: lib.body.colors[0].img, movable: false },
-        { id: 'eyes', name: 'Цвет глаз', z: 2, img: lib.eyes.colors[0].img, movable: false },
-        { id: 'base', name: 'Моделька кота', z: 3, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
+        { id: 'base', name: 'Моделька кота', z: 2, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
+        { id: 'eyes', name: 'Цвет глаз', z: 3, img: lib.eyes.colors[0].img, movable: false },
+        // Все остальные детали идут выше
         { id: 'tail', name: 'Хвост', z: 10, img: lib.tail.colorsByModel.t1[0].img, movable: true, currentTypeId: 't1' },
         { id: 'belly', name: 'Живот', z: 11, img: '', movable: true },
         { id: 'mane', name: 'Грива', z: 12, img: '', movable: true },
@@ -199,6 +200,7 @@
         const activeLayer = layers.find(l => l.id === activeTab);
         const data = lib[activeTab];
 
+        // ЛОГИКА ВКЛАДОК (LINES 308+)
         if (activeTab === 'tail') {
             const typeLabel = document.createElement('div');
             typeLabel.className = 'sub-label';
