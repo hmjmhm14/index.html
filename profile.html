@@ -5,159 +5,155 @@
     <title>CBR CATS - Профиль</title>
     <style>
         body, html {
-            margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif;
             color: white; overflow: hidden;
             background: url('https://i.ibb.co/RGXR1DyG/image.jpg') no-repeat center center fixed;
             background-size: cover;
+            /* Центрируем всё содержимое body */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Общий контейнер на весь экран */
-        .screen-wrapper {
+        /* Тот самый компактный блок по центру (как на рисунке) */
+        .main-wrapper {
+            width: 1100px; /* Оптимальная ширина, чтобы не на весь экран */
+            height: 75vh;  /* Высота на 75% экрана */
+            background: rgba(0, 0, 0, 0.6); /* Полупрозрачный темный фон */
+            backdrop-filter: blur(5px);    /* Легкое размытие заднего фона */
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            background: rgba(0, 0, 0, 0.4); /* Затемнение фона для четкости */
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        /* Верхняя панель с именем и выходом */
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 0 10px;
+            margin-bottom: 25px;
         }
 
-        .cat-name-title { font-size: 30px; text-transform: uppercase; letter-spacing: 4px; font-weight: bold; }
+        .cat-name-title { 
+            font-size: 28px; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
 
-        /* СЕТКА ИЗ ТРЕХ КВАДРАТОВ */
+        /* СЕТКА ИЗ ТРЕХ ПАНЕЛЕЙ */
         .main-layout {
             display: grid;
-            grid-template-columns: 320px 1fr 300px; /* Квадрат - Инфа - Квадрат */
-            gap: 25px;
+            grid-template-columns: 280px 1fr 260px; /* Компактные бока, широкая середина */
+            gap: 20px;
             height: 100%;
-            max-height: 600px; /* Чтобы не растягивалось слишком сильно */
         }
 
-        /* Общий стиль для всех трех блоков */
-        .block-panel {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+        .panel {
+            background: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
             padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* 1. ЛЕВЫЙ КВАДРАТ (ОКРАС) */
-        .avatar-display {
-            width: 100%;
-            height: 100%;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
+        /* ОКРАС */
+        .avatar-zone {
+            flex: 1;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            letter-spacing: 2px;
-            color: #888;
+            background: rgba(255,255,255,0.02);
+            color: #666;
         }
 
-        /* 2. ЦЕНТРАЛЬНЫЙ БЛОК (ИНФА) */
-        .info-content {
+        /* ИНФОРМАЦИЯ */
+        .info-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            overflow-y: auto; /* На случай длинного текста */
+            gap: 10px;
         }
-
-        .info-row {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
+        .info-box {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
             border-radius: 8px;
-            border-left: 4px solid #fff;
+            border-left: 3px solid #fff;
         }
+        .label { font-size: 10px; color: #888; text-transform: uppercase; }
+        .val { font-size: 16px; margin-top: 2px; }
 
-        .label { font-size: 10px; text-transform: uppercase; color: #aaa; margin-bottom: 4px; }
-        .value { font-size: 18px; letter-spacing: 1px; }
-
-        /* 3. ПРАВЫЙ КВАДРАТ (КНОПКИ) */
-        .menu-list {
+        /* МЕНЮ */
+        .menu-btns {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            justify-content: center;
-            height: 100%;
+            gap: 8px;
         }
-
-        .nav-btn {
-            background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .nav-link {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
             color: white;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
             text-decoration: none;
+            font-size: 12px;
             text-transform: uppercase;
-            font-size: 13px;
-            border-radius: 8px;
-            transition: 0.3s;
-            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.2s;
         }
+        .nav-link:hover { background: #fff; color: #000; }
 
-        .nav-btn:hover {
-            background: #fff;
-            color: #000;
-            transform: scale(1.02);
-        }
-
-        .btn-logout {
-            background: #900;
+        .btn-exit {
+            background: #722;
             color: white;
             border: none;
             padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
+            transition: 0.3s;
         }
+        .btn-exit:hover { background: #a22; }
     </style>
 </head>
 <body>
 
-    <div class="screen-wrapper">
+    <div class="main-wrapper">
         <div class="top-bar">
-            <div class="cat-name-title" id="display-name">ИМЯ КОТА</div>
-            <button class="btn-logout" onclick="exit()">ВЫЙТИ</button>
+            <div class="cat-name-title" id="display-name">ЗАГРУЗКА...</div>
+            <button class="btn-exit" onclick="exit()">ВЫЙТИ</button>
         </div>
 
         <div class="main-layout">
             
-            <div class="block-panel">
-                <h3 style="text-align:center; margin-top:0;">ОКРАС</h3>
-                <div class="avatar-display">
-                    [ МЕСТО ДЛЯ ФОТО ]
+            <div class="panel">
+                <h4 style="margin: 0 0 15px 0; text-align: center; color: #aaa;">ОКРАС</h4>
+                <div class="avatar-zone">ФОТО КОТА</div>
+            </div>
+
+            <div class="panel">
+                <h4 style="margin: 0 0 15px 0; text-align: center; color: #aaa;">ДАННЫЕ ПЕРСОНАЖА</h4>
+                <div class="info-list">
+                    <div class="info-box"><div class="label">ID</div><div class="val" id="display-id">...</div></div>
+                    <div class="info-box"><div class="label">Племя</div><div class="val" id="display-tribe">...</div></div>
+                    <div class="info-box"><div class="label">Пол</div><div class="val" id="display-gender">...</div></div>
+                    <div class="info-box"><div class="label">Рождение</div><div class="val" id="display-date">...</div></div>
+                    <div class="info-box"><div class="label">Клички</div><div class="val" id="display-nicknames">...</div></div>
                 </div>
             </div>
 
-            <div class="block-panel">
-                <h3 style="text-align:center; margin-top:0;">ИНФОРМАЦИЯ</h3>
-                <div class="info-content">
-                    <div class="info-row"><div class="label">ID ПЕРСОНАЖА</div><div class="value" id="display-id">...</div></div>
-                    <div class="info-row"><div class="label">ПЛЕМЯ / КЛАН</div><div class="value" id="display-tribe">...</div></div>
-                    <div class="info-row"><div class="label">ПОЛ</div><div class="value" id="display-gender">...</div></div>
-                    <div class="info-row"><div class="label">ДЕНЬ РОЖДЕНИЯ</div><div class="value" id="display-date">...</div></div>
-                    <div class="info-row"><div class="label">КЛИЧКИ</div><div class="value" id="display-nicknames">...</div></div>
-                </div>
-            </div>
-
-            <div class="block-panel">
-                <h3 style="text-align:center; margin-top:0;">МЕНЮ</h3>
-                <div class="menu-list">
-                    <a href="#" class="nav-btn">Игровая</a>
-                    <a href="#" class="nav-btn">Группы / Чаты</a>
-                    <a href="#" class="nav-btn">Личные сообщения</a>
-                    <a href="#" class="nav-btn">Новости</a>
+            <div class="panel">
+                <h4 style="margin: 0 0 15px 0; text-align: center; color: #aaa;">МЕНЮ</h4>
+                <div class="menu-btns">
+                    <a href="#" class="nav-link">Игровая</a>
+                    <a href="#" class="nav-link">Группы / Чаты</a>
+                    <a href="#" class="nav-link">Сообщения</a>
+                    <a href="#" class="nav-link">Новости</a>
                 </div>
             </div>
 
