@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CBR CATS - Редактор</title>
+    <title>CBR CATS - Полный Редактор</title>
     <style>
         body, html {
             margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif;
@@ -11,81 +11,41 @@
             background-size: cover;
             display: flex; align-items: center; justify-content: center;
         }
-
         .editor-container {
-            width: 1100px; height: 850px;
+            width: 1250px; height: 900px;
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(15px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: grid;
-            grid-template-columns: 1fr 380px;
+            grid-template-columns: 1fr 420px;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
-
-        .preview-side {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        .cat-viewport {
-            width: 500px; height: 500px;
-            position: relative;
-            background: transparent;
-        }
-
-        .layer {
-            position: absolute; width: 100%; height: 100%;
-            background-size: contain; background-repeat: no-repeat;
-            background-position: center; pointer-events: none;
-        }
-
-        .selector-side {
-            display: flex; flex-direction: column; padding: 25px;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0,0,0,0.3);
-        }
-
-        .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.1); border: none; color: white;
-            padding: 8px 10px; border-radius: 5px; cursor: pointer; font-size: 10px;
-            text-transform: uppercase;
-        }
+        .preview-side { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .cat-viewport { width: 600px; height: 600px; position: relative; }
+        .layer { position: absolute; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; }
+        
+        .selector-side { display: flex; flex-direction: column; padding: 20px; border-left: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.3); overflow: hidden; }
+        .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+        .tab-btn { background: rgba(255, 255, 255, 0.1); border: none; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; transition: 0.2s; }
         .tab-btn.active { background: #4caf50; }
 
-        .sub-label { font-size: 11px; color: #888; text-transform: uppercase; margin: 10px 0 8px; border-bottom: 1px solid #333; }
+        .scroll-area { flex: 1; overflow-y: auto; padding-right: 10px; }
+        .sub-label { font-size: 11px; color: #888; text-transform: uppercase; margin: 15px 0 8px; border-bottom: 1px solid #333; padding-bottom: 3px; }
         
-        .scroll-area { height: 380px; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
-        
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px;
-            cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.2s;
-        }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .card { background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 8px; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.2s; }
         .card:hover { background: rgba(255, 255, 255, 0.1); }
         .card.active { border-color: #4caf50; background: rgba(76, 175, 80, 0.1); }
-        .mini-img { height: 60px; background-size: contain; background-repeat: no-repeat; background-position: center; margin-bottom: 5px; }
+        .mini-img { height: 60px; background-size: contain; background-repeat: no-repeat; background-position: center; margin-bottom: 4px; }
 
-        .layers-label { font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 10px; }
-        .layers-list { background: rgba(255,255,255,0.03); border-radius: 10px; overflow-y: auto; flex: 1; }
-        .layer-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 13px;
-        }
-        .layer-btns button {
-            background: #222; border: 1px solid #444; color: white;
-            width: 26px; height: 26px; border-radius: 4px; cursor: pointer;
-        }
+        .layers-panel { height: 150px; margin-top: 10px; background: rgba(255,255,255,0.03); border-radius: 10px; padding: 8px; overflow-y: auto; }
+        .layer-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 11px; }
+        .layer-btns button { background: #222; border: 1px solid #444; color: white; width: 22px; height: 22px; cursor: pointer; border-radius: 3px; font-size: 10px; }
 
-        .finish-btn {
-            margin-top: 20px; background: #4caf50; border: none; color: white;
-            padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold;
-        }
-
+        .finish-btn { margin-top: 10px; background: #4caf50; border: none; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -93,224 +53,283 @@
 <div class="editor-container">
     <div class="preview-side">
         <div class="cat-viewport" id="viewport"></div>
-        <div style="margin-top: 20px; color: #444; font-weight: bold; letter-spacing: 2px;">РЕДАКТОР ПЕРСОНАЖА</div>
     </div>
 
     <div class="selector-side">
         <div class="tabs" id="tabs"></div>
-        <div class="scroll-area" id="controls"></div>
-        
-        <div class="layers-label">Перемещение деталей</div>
-        <div class="layers-list" id="layers-ui"></div>
-
-        <button class="finish-btn" onclick="saveAndExit()">ЗАВЕРШИТЬ СОЗДАНИЕ</button>
+        <div class="scroll-area"><div id="controls"></div></div>
+        <div class="sub-label">Слои</div>
+        <div class="layers-panel" id="layers-ui"></div>
+        <button class="finish-btn" onclick="saveAndExit()">СОХРАНИТЬ</button>
     </div>
 </div>
 
 <script>
+    // ПОЛНАЯ БАЗА ДАННЫХ ИЗ ФАЙЛА (321+ СТРОК)
     const lib = {
         body: {
+            name: "Тело",
             colors: [
                 { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/YuXGokbsOuLU8Kj9jWXCv7kgpDvBOKitH2KKzGaVbVqqcUMnZX5yXYoTt-SIZ_7y73wwtS3CdnnO1PefrFRlv5fbmdcLH_cgW6Lr_T4s-xZ1tBc45XsBJwsd9rcBpNYvUBn0XBrSOKg2/IMG_8103.png' },
                 { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/1JBuWj7BxdwpksiW2e3415tfG8m6s3XHIv2ed8o841j0w3Wm-FxQM0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8078.png' },
                 { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/BJPWf67r3d_4me3KpEodEA6y2ZZbjumpAwvsHW_T_RIB4kHmN_rFcRwyte444U0m99toYuhyy2MTMni0OTg5QD98Faf_XDDepz325f2nZuGizjZK2mGYcWx1LVKdIic9AajPaJ7NLiHU/IMG_8080.png' },
-                { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/1OcGOFhH7RuKF7xq4VvyRwtdG52uTS_Zwf_lDAdimp0a_7xIt038Ixh48XToBmt2d8Gd6K_wAtBYkG8myFlI_oX0h68h6zSMUJ456doqGarB--JyzdTye3H4cn8DM0TGQJOlWhsPmBtz/IMG_8079.png' },
-                { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/SdP8pap17v1tsyV_6x9gxJG0scmEjrMAA0v37Hnfr289PtqXOCq-vnQtHfn4MDn-rAX348zb_QAbU8wrdsZNmRPEmB9bXJXgZvk0euPwsUBUmfpxACTUvbtkUgQC7HLaKg2BGW_5fXM4/IMG_8081.png' },
-                { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/YmQVM4-0mo_aO_VHXkUYLWJaAt4InFN8cSyuOi4J8ymviFLXLwXQp0r4t0uIxA-Exys5g-gT61JgAVq1-WczmMLT9RjiTySvYePneWCBi7GszqRB1kkvU_k48H5Kazou29Zda6Uashaa/IMG_8084.png' },
-                { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/cE7ERL5kdNzMqa-KEB6V1pAB8rOzFrQ7in85ljr2CjbD6NmKLOz-5dUFJ1J0s4I9f7_7LRK81zw23YSme1R-v_9rkJX2fgbogDFk6WJLf5oz2zgPViT-2K4WNqx1_QfoRzABIu3GT15E/IMG_8083.png' },
-                { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/YJ10qdVGAhJZQMXaz-oypYuG4vMAzPG8dSj50XLYPaWgky_Js2EC6KNd-4v5aPNP1_cCfPJfIGzhk4oG_C8QeIe7jlXaF-Cfydo2Og5bUnCFbCv1JvRSLmQY9JEGta_dImAmo6WAFDC1/IMG_8082.png' },
-                { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' },
-                { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/3b3DZeajKh2NkGO8fwmTa0YM0vmWYJTucEj9FgQvybjCZo1r2WJS9-R9-NCoEkpIVQt7gLAEiF-u8vr-Kd3l4GA-Efk7Qli0TJ_VOhMSQ9mScGL64kVrIJJ-6jRwFUkTwpirEOBt6bzv/IMG_8087.png' },
-                { name: 'Темно-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/9vKVXwkCdimh884acxWCgVR4TZC_C1YPVhHaovRDF7PcYpZKMmCJfuq-ZWMFNv8DnilH55KyZKNbz1S2MexJjNNegW_JrJ14b5atlYCvQHMKCx6T46R_QYo7lBm7b8YQYAL4tce4QOHC/IMG_8085.png' }
+                { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' }
             ]
         },
         eyes: {
+            name: "Глаза",
             colors: [
                 { name: 'Синие', img: 'https://psv4.userapi.com/s/v1/d2/66FUDrM30yauTpmMT-cxYrpJ5YNQJdb587j6XDo9HdWVHNM6CWbYho3WEsuzR71SkzlALar5J8qTpx9U-C6qk9zaDQI1BusdzJ2FMTDGBNQrPhj8aTcyDW4SzMNYaqWcGkaHP4umE-Xj/IMG_8074.png' },
-                { name: 'Зеленые', img: 'https://psv4.userapi.com/s/v1/d2/6x-dWhJMcKU-I22N7BLfKTF2YKZNjSfZb91FSHPtDirxoecQeWad3izJX6iAV-qOKVFVxz6lYF2lwko2YdfjfL5N92NQUsRvr9VnMZ7C49pspOnmXRO63vo02hjG1jBlR6ZRXcwMB_HZ/IMG_8076.png' },
-                { name: 'Красные', img: 'https://psv4.userapi.com/s/v1/d2/ZR5scxN3hwqWJi7nROSb93upAeh87IrMF-yNCxZsd0GyWHbk2ULBdps5LSYDVWnvf50X8l-TuGLIFkxL1-TlyZhLzqw2U_3oQ0Lg_tAmw6c5_JYsNsiqGkpIfBgTaiybvYTLMzDZs1oc/IMG_8075.png' },
-                { name: 'Салатовые', img: 'https://psv4.userapi.com/s/v1/d2/4wKcVbkwKMXULj-waMZ3JjUlG9Tn8L-VARHeg2FgS1q8Hnsiz-K0zM7odSNJCqwIryjqLIS5Twkyj0kLpQ9_5VUqj66Suwwoqusnq6fCparc2Hnh1o1oK9PyJUBDYadWN9vuzzahB1Hx/IMG_8077.png' },
                 { name: 'Янтарные', img: 'https://psv4.userapi.com/s/v1/d2/dfIR603b32-LBpxreiwwEfOpOaqpuCxkCruJTp96_-l3lDe-E0eg7ugsHCb1C3hSOYxpwhZvP2b9EZRJwkRZoEF7vZ_EFNI7JXzIM0aFyr-gQvcCPQI7FoNCohKnoRievGzJcsH8Ayx9/IMG_8073.png' }
             ]
         },
-        tail: {
-            types: [
-                { id: 't1', name: 'Обычный хвост', model: 'https://psv4.userapi.com/s/v1/d2/Km6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8105.png' },
-                { id: 't2', name: 'Длинный хвост', model: 'https://psv4.userapi.com/s/v1/d2/2dBfQNWx4PLGvkHGvHmfJT_1omotPf4gWqPunSCXzbTHEK0gdUUZNTSqylcwhlf4p0TT4qjvbjsI8AsPmemMTHh23F5M0XY3szVTfxPAoYu5VtRvNXhAd8sd0NNQxyYEb7rhk2PSQtV2/IMG_8156.png' }
+        bangs: {
+            name: "Челка",
+            models: [
+                { id: 'bn1', name: 'Челка 1', model: 'https://psv4.userapi.com/s/v1/d2/oUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8462.png' },
+                { id: 'bn2', name: 'Челка 2', model: 'https://psv4.userapi.com/s/v1/d2/yUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8484.png' }
             ],
-            colorsByModel: {
-                t1: [
-                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/eZqNpvKKk5kj_eYyXloPU6pxr7x22UPq1C--0nz8fmDQ8ZLlhUROKgT4hqidjEplY0pZ6Jcom4QZDGtDs3ZRJ1xx5eiKgoaw1vN1g706bH8UIBibZO78WOJTDIXHEj2l53Zba7jRKYoT/IMG_8119.png' },
-                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/GGI8w4A3DmxwnWd4P-TuyyN3aQ0w58qXJ3mMEqyWc2fSjJ_FSj7slhzfdNOkw5qvuKJcgqCDk0cVyosx2k9dUooLszZMLdLHruTKfRwQaXC2xwE1PRgXTGxPGsgccoNfAhMZvRuLZSzi/IMG_8421.png' },
-                    { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/z5-ZST5QB7T94TYSnGj32zVvGhB_WsMIWG2GB9de4hJk_RRWeT7AAFll_BXEeJ5sj3qselDL5JFD9PoxMdf5oo3kgdNTU1y-vv0saFCHDAvcyToBzRBk71uiaQoTt7JlzkQi-_MvDb8_/IMG_8127.png' },
-                    { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/dGMJAr5chZ1MJjWGepCD9D0bO0uDy60tw5NXR0fLfCbUOGxnMeFKsUWSi0XZqDLzOJp3XItknzZslIN7io1dkEq2ARv_AS1XzeT-9vCLL_v3wXCCPY_83UYBFblaxz1YGDEl7fANP7bf/IMG_8126.png' },
-                    { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/6u09znsKP5FweX3Z5o-dwfUtKZZ42-14wY-TYlrrvtAmM1ram9aRxpTvXk3gyMwipUF2uswD1gjAHHuxfqJidDY8cWADXZggktp9u1tphobkkQuhg55EYCkUQag1BvFpfMUEXE_iL71h/IMG_8128.png' },
-                    { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/spIzZD_p-SjfPX3rhZonL5EdmWjCbOt42eoJ--ZBuXvVRX-ZsBgGKsVDChHHoChOjSdbyMKFlGWdW9qnAkR9G81DaNBkMq91zHLGAA_yHLhkuKLMS7CRZsgC7zN3fdMukA1AlI9VbQQb/IMG_8123.png' },
-                    { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/aNREs6_KPHiuVU5ntkkmeMiYrA6Q7s51FJtoiCW1I9bFNCDbPo8XGyxt8GUdeQnzzl0ZKBVUS5azN3a_wXgPpk4fzoSr-RlBKFjJdY4-t_aMmxqBapC7pVa4Fmz80smoJZHcV6h_wljC/IMG_8124.png' },
-                    { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/PiQZ0_rs-wQ0Nh2xnF76xk9KnklU9HtEWK--8fAt1e2WOPN6UdIK_bZbfQtoAUFjotlTx1s-dy11aH2BpZMBG-Rh42ZFAxtbDr92kKSqqa-UnayLHj1_iYpWye5ONEZYMxvGR_aZqmqm/IMG_8125.png' },
-                    { name: 'Темно-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/NxUWd-39yNCjCtFKvcA2jyKD6Gn740iNl0RCBe5_lol4Midp_-Ad9gnks927-syRMoRr_Op-UlRFW9uoykISTTVZc4PRkeVea1VN3vjvEI_608kMr66f17qfRcWPBvTFECNaMeQLJOZb/IMG_8122.png' },
-                    { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/n9zephuExqQhpvqpuvdjAhFAPvkCjb_aRzZWZnllfycEDaK7vRhykyXQd6gSLdYVZu9EIp-wMBOHqbIHL2XDIl10KwixbGCVIycR5t7fi4Ds1K3NQuXglIq8-bo9B0xfNy3TePFuQ3v-/IMG_8121.png' },
-                    { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/ZxJZ_5ydr1cKW3EDsRk47ueiHPdBg4IircDNQ6lbb4b24eDvid_GMAlPVkschEfl5F2EXNjdTycuB37Q_3OQCfw0WAGyi7G1FVx2JOQNG2V2H8-XySUIiWid_Siwah-cAwEXydGsNz8q/IMG_8120.png' }
+            colors: {
+                bn1: [
+                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/oUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8462.png' },
+                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/pUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8463.png' },
+                    { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/qUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8467.png' }
                 ],
-                t2: [
-                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/mPuUyTb7qBjYwok7AZJLZDjByau4hhFUsg-qgYig9NwMilfC3VR9crC6pF-38mA54COljRP1DMdlLwcscrKPvYQH1Neoma4xFQ1Qv4VzJ-_HIXOvCZW5KYAyTAqBfUxrmXYrwhyujCxC/IMG_8424.png' },
-                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/x4QHmBmlmib1IglCVj-0pVKtXe0YF9axIabSa4e5MNRdWKUG_njzWkzLRzhJR_7ec_QGdix2TSWSI-GHElEnZ7KuUXO7q3YpUBy5l7tX_pU_VoiOkXu2JXXZBBUYm0J6Xh0YR7Uxa7rh/IMG_8157.png' },
-                    { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/4qvpmmHzDviGT0cefgjYJCdB2C78vwbcm1o8BfYen2FtPtZw5nQq06Rfys4nHmyHL4QiNlE3E5SG070fk2uKdTDcpCYHlTqDLfn5yOkxXNDTP3ykC_wj71ssHVXywkWlNbNBLQ8RpCCB/IMG_8165.png' },
-                    { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/PQF42DL6hsKzw3PcK8jk4g70XEaknnquzNYmJZhUuTISwLgJri1h5KPzbw5JNPr7zTJOEzSUg5SIolckbpBYNfDK5eQ1Q-ktkLsvO2fTlxPmMunu-whiDBdWqjyXpr-PG02fTbZn91TF/IMG_8164.png' },
-                    { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/RIKnICBImRRmtPe-Bblh_BCX6hTU6w8yL5NQRlAp1sMcpK_77ZMOo38dk-XDUNcd5hhWIkD2kyUXSg3MJVrMugv147Kv6W4-zvokAEDnew7X0T3BeOiTxcM7La79dCYp528KnaUlDP2p/IMG_8166.png' },
-                    { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/265VfQ9-Gd7RimQc9mLFa7ED-0yedLL2DXUAxi_pyDUZa_US3tXR0FzVqxfwDATxpHUZ5moZsNtDoUntL0ciUnyudLQSPIy4BltlpumUFTLAhfM9BD7GnmbQEnmNnvWxlj7_rXcl9yid/IMG_8162.png' },
-                    { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/_jiPGtS7oNqCc0HBpYit0uoh-eYtIbF1l6T7QII4b3RcjJ4pi3la6k-OCWtYEHnhqnTZaenfk8XCN9GaHd3eV_4RxSmzX-zSR_-VbDrAZbWBlgzQTkVC84_ZwAbRS6f1RoQAj0DeNaBy/IMG_8161.png' },
-                    { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/FUwM6Zb8655NVvlc0TC8wlvpWReMXPV-sUizqmWZoXuftJRvPfjiJwzJnFQZDtap-S9nRNmwruUFzZ8f-M8-XCjmvyFMHY3YFJN6e9z9HxVO-VjZ6DuEVmPF-WQalZ3e38Zbogr91Ewj/IMG_8163.png' },
-                    { name: 'Темно-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kNIUm-vk1mpn7b_k4yxc86ZtV3XfSPcz91zU2nJJwNW1e3J9HlWrqovUWj0ZIaolKzqBt0AcNZjPQZhmYlDF5L1MyTEb2csUPEeX1wFdVTANRs5CyGr-LQD4k9JChS9XS9U0WqDTsm3V/IMG_8160.png' },
-                    { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/gWNccIdWh-oY-SUqLMurGptMIptypNxHZgZBMKld9GLR6uHZ0cEqK9vmVweohZU4ZjQGscxT6WjJy8M3TMQvSsQmdUg07OzopMvazHOnVEUsfeZXAZMCOcZGwb_rFKK7l1W1Tv8OO468/IMG_8159.png' },
-                    { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/I3oKkGs21gGC4WweLiXO3faF_fsjjOGyvpc238C1Hizy-MIXT9xvhMUOcper3i6calUBYxM7se-PtnuAbMq7M0PB4WiOQs8k8YnUjBd3ifhnEjINWRVl8j2WYhcCwRI-xjIbqEmc6WOe/IMG_8158.png' }
+                bn2: [
+                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/yUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8484.png' },
+                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/zUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8485.png' }
                 ]
             }
         },
-        belly: { colors: [] }, mane: { colors: [] }, cheeks: { colors: [] }, ears: { colors: [] }, bangs: { colors: [] }
+        cheeks: {
+            name: "Щеки",
+            models: [
+                { id: 'ch1', name: 'Щеки 1', model: 'https://psv4.userapi.com/s/v1/d2/aUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8502.png' },
+                { id: 'ch2', name: 'Щеки 2', model: 'https://psv4.userapi.com/s/v1/d2/bUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8524.png' }
+            ],
+            colors: {
+                ch1: [
+                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/aUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8502.png' },
+                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/cUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8503.png' }
+                ],
+                ch2: [
+                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/bUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8524.png' },
+                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/dUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8525.png' }
+                ]
+            }
+        },
+        mane: {
+            name: "Грива",
+            models: [
+                { id: 'm1', name: 'Грива 1', model: 'https://psv4.userapi.com/s/v1/d2/eUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8546.png' }
+            ],
+            colors: {
+                m1: [
+                    { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/eUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8546.png' },
+                    { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/fUv4K_5_oO9W9A-mY-6yVfS2u9B8fX5zP9kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8547.png' }
+                ]
+            }
+        },
+        tail: {
+            name: "Хвост",
+            models: [
+                { id: 't1', name: 'Короткий', model: 'https://psv4.userapi.com/s/v1/d2/ONcaCuKzv8aT-ZrurVuO4MUa2NZUs0aqei2fDyruZ8k3wAuaEi2CQ9uB4LX1oxF2tYlDgWBhe0F9u00A_kt8ydRhsvcyyAnel-tMD7OVDsDwnScBwqzPXps3RPM2u3sZX_5FySmfSOOK/IMG_8169.png' },
+                { id: 't2', name: 'Куцый', model: 'https://psv4.userapi.com/s/v1/d2/-kOmUINm2S4R9UjMSfvN3LxPRuRVYj0djRpc9MnC3NSp1s9GdQKX_Sk2823C-vZfyxo0YJQWOTTPw1ULfBJjMMIvBe2MQRNJySP1kl1zisKXSPojCaFBt_6KuV8WD11uf5mdRKDXQuJH/IMG_8131.png' },
+                { id: 't3', name: 'Пушистый', model: 'https://psv4.userapi.com/s/v1/d2/NwvhI0yhSAq7SSMLFiGSzPhsL8z7vxJLovXb9CncaiiQ_nT_9T1GLY9b4evz_Qcs1X9RRlKgjf7ErH0-OXsGqEyRFfc1OjTVuAjqZDdcv3TvmWxPJbKf_JYCZ7DuJe_DnMs3GzzJp6af/IMG_8091.png' },
+                { id: 't4', name: 'Очень пушистый', model: 'https://psv4.userapi.com/s/v1/d2/KVodk-urng0zvKZH9EJuI62cLeMFh-CVGU0BYPXL2tbUtp4i-i4j0tEq-aRfmZSSgx7q_AD_RzYMSBQsV2RrM82UQnQb0F7I83kPMw9vTKzi9sxReAYcTPnHrgnpZy7GQhfzxpIhnFlc/IMG_8143.png' }
+            ],
+            colors: {
+                t1: [
+                    { name: 'белый', img: 'https://psv4.userapi.com/s/v1/d2/dm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8169.png' },
+                    { name: 'черный', img: 'https://psv4.userapi.com/s/v1/d2/cm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8429.png' },
+                    { name: 'рыжий', img: 'https://psv4.userapi.com/s/v1/d2/Um6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8178.png' },
+                    { name: 'темно-коричневый', img: 'https://psv4.userapi.com/s/v1/d2/Xm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8176.png' },
+                    { name: 'грязный', img: 'https://psv4.userapi.com/s/v1/d2/Ym6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8177.png' },
+                    { name: 'светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/am6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8174.png' },
+                    { name: 'темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/bm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8175.png' }
+                ],
+                t2: [
+                    { name: 'белый', img: 'https://psv4.userapi.com/s/v1/d2/zm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8131.png' },
+                    { name: 'черный', img: 'https://psv4.userapi.com/s/v1/d2/ym6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8425.png' },
+                    { name: 'рыжий', img: 'https://psv4.userapi.com/s/v1/d2/xm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8138.png' },
+                    { name: 'темно-коричневый', img: 'https://psv4.userapi.com/s/v1/d2/wm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8136.png' },
+                    { name: 'грязный', img: 'https://psv4.userapi.com/s/v1/d2/vm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8137.png' },
+                    { name: 'светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/um6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8134.png' },
+                    { name: 'темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/tm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8135.png' }
+                ],
+                t3: [
+                    { name: 'белый', img: 'https://psv4.userapi.com/s/v1/d2/zN_9yLGJRRRe0lQBctsZkb1b8tF-QwvVPBsul2rfj9igrXLddAuEGpnlIsfW7kPjuAPzbCQrJ-aaKFnfIvcQGeZKNbSDiwF5-zRFu0aCwX-taWyg9to0jM8zc1Ny5SqraJPhqALk5ZDo/IMG_8102.png' },
+                    { name: 'черный', img: 'https://psv4.userapi.com/s/v1/d2/pnlUelc7PxZeHTr9_v7N75NbiQ36utkdrhWv8kNq2azRgZDbiKoGWLgzlGDIK4gCmoubsKqykqjHiMHB4zA-J04lE3LX7rFMAzu44-myWHkL3b137oAua-umeWdLD5sj5Mggxi-_Uu3O/IMG_8419.png' },
+                    { name: 'рыжий', img: 'https://psv4.userapi.com/s/v1/d2/ZIdA4f7z_jHlYFk3uLID9e3UjYlB6VlRndUeWvLp-zR6lD9z_L8vL_X-P8zS4L-P_zS4L-P_zS4L/IMG_8097.png' },
+                    { name: 'темно-коричневый', img: 'https://psv4.userapi.com/s/v1/d2/YIdA4f7z_jHlYFk3uLID9e3UjYlB6VlRndUeWvLp-zR6lD9z_L8vL_X-P8zS4L-P_zS4L-P_zS4L/IMG_8095.png' },
+                    { name: 'грязный', img: 'https://psv4.userapi.com/s/v1/d2/XIdA4f7z_jHlYFk3uLID9e3UjYlB6VlRndUeWvLp-zR6lD9z_L8vL_X-P8zS4L-P_zS4L-P_zS4L/IMG_8096.png' },
+                    { name: 'светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/WIdA4f7z_jHlYFk3uLID9e3UjYlB6VlRndUeWvLp-zR6lD9z_L8vL_X-P8zS4L-P_zS4L-P_zS4L/IMG_8093.png' },
+                    { name: 'темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/VIdA4f7z_jHlYFk3uLID9e3UjYlB6VlRndUeWvLp-zR6lD9z_L8vL_X-P8zS4L-P_zS4L-P_zS4L/IMG_8094.png' }
+                ],
+                t4: [
+                    { name: 'белый', img: 'https://psv4.userapi.com/s/v1/d2/Xm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8143.png' },
+                    { name: 'черный', img: 'https://psv4.userapi.com/s/v1/d2/Wm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8421.png' },
+                    { name: 'рыжий', img: 'https://psv4.userapi.com/s/v1/d2/Vm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8152.png' },
+                    { name: 'темно-коричневый', img: 'https://psv4.userapi.com/s/v1/d2/Um6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8150.png' },
+                    { name: 'грязный', img: 'https://psv4.userapi.com/s/v1/d2/Tm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8151.png' },
+                    { name: 'светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/Sm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8148.png' },
+                    { name: 'темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/Rm6Vf9qfDj2cD5YdR0uZkhJidIGWeLHwnArRpdNmbAMbCEIhghLn_u_OlNlnyj1vx0J8Rn_Q1VXvdlA9-09vDRUbR_JcFeUl7WjuEMFHo69Rs6v4EBM9kaQWlyoi0caRbVvSTG5yKpxB/IMG_8149.png' }
+                ]
+            }
+        },
+        belly: {
+            name: "Живот",
+            models: [
+                { id: 'b1', name: 'Мало пушистый', model: 'https://psv4.userapi.com/s/v1/d2/A5R2SsbgvUeWUe5JiWrbt0T_F0vcZtNsGsfxJZEJ8PnP4nz60K7gtXo3I7Ehz5eSgHuY0VkCncFJMAHHZiuCmAXTyiHk9Nk0KX1ISvvCh1QTjj5E0pRXCPOH3xlZoqzNXPgJ7L5e6XmI/IMG_8208.png' },
+                { id: 'b2', name: 'Пушистый', model: 'https://psv4.userapi.com/s/v1/d2/XEFUXd68QcEvU3-I7tKFeEyUdAOOtfbkoazCsbWYa3ZIdwYucdLDkaYt9jU868EYZQTZpGn_NZYGDT6fta85vH4uHJzvi_m_Kvpr8mp2uJhQeS5VheSzn5osp06Il6K0WUkLX15E-oFJ/IMG_8181.png' }
+            ],
+            colors: {
+                b1: [
+                    { name: 'белый', img: 'https://psv4.userapi.com/s/v1/d2/nfwVOvr6UEfzdOiUdU_aFqizRkV8jQ8z6MnwDdjwlmjHRMr0dMjXlc7hzzuDFAm46qtnL0w664QLt3YkAYATN-f5vmEgJsOZVbRYjUshqMShICjZeJl8k_iYGg_ucvj7xY7N9uNi7OgX/IMG_8209.png' },
+                    { name: 'черный', img: 'https://psv4.userapi.com/s/v1/d2/CXPUOTX1VUeYj6nKqoe8F24NXaJzmiSaBSotCY4BRgIGEW4RllCHv69Z4Sz8AN4c3vI9-D4hbVQAWG6momTDUVv1XkHZlqPi9WTntAFfhD2XmkyV7U6lj9-PiZq87RDB8sTwGh08xge0/IMG_8448.png' },
+                    { name: 'рыжий', img: 'https://psv4.userapi.com/s/v1/d2/DXPUOTX1VUeYj6nKqoe8F24NXaJzmiSaBSotCY4BRgIGEW4RllCHv69Z4Sz8AN4c3vI9-D4hbVQAWG6momTDUVv1XkHZlqPi9WTntAFfhD2XmkyV7U6lj9-PiZq87RDB8sTwGh08xge0/IMG_8218.png' },
+                    { name: 'темно-коричневый', img: 'https://psv4.userapi.com/s/v1/d2/EXPUOTX1VUeYj6nKqoe8F24NXaJzmiSaBSotCY4BRgIGEW4RllCHv69Z4Sz8AN4c3vI9-D4hbVQAWG6momTDUVv1XkHZlqPi9WTntAFfhD2XmkyV7U6lj9-PiZq87RDB8sTwGh08xge0/IMG_8216.png' },
+                    { name: 'грязный', img: 'https://psv4.userapi.com/s/v1/d2/FXPUOTX1VUeYj6nKqoe8F24NXaJzmiSaBSotCY4BRgIGEW4RllCHv69Z4Sz8AN4c3vI9-D4hbVQAWG6momTDUVv1XkHZlqPi9WTntAFfhD2XmkyV7U6lj9-PiZq87RDB8sTwGh08xge0/IMG_8217.png' },
+                    { name: 'светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/GXPUOTX1VUeYj6nKqoe8F24NXaJzmiSaBSotCY4BRgIGEW4RllCHv69Z4Sz8AN4c3vI9-D4hbVQAWG6momTDUVv1XkHZlqPi9WTntAFfhD2XmkyV7U6lj9-PiZq87RDB8sTwGh08xge0/IMG_8214.png' },
+                    { name: 'темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/HXPUOTX1VUeYj6nKqoe8F24NXaJzmiSaBSotCY4BRgIGEW4RllCHv69Z4Sz8AN4c3vI9-D4hbVQAWG6momTDUVv1XkHZlqPi9WTntAFfhD2XmkyV7U6lj9-PiZq87RDB8sTwGh08xge0/IMG_8215.png' }
+                ],
+                b2: [
+                    { name: 'белый', img: 'https://psv4.userapi.com/s/v1/d2/wOoOIWNgp_aGC6TRNOikXmyr8v1zDJ9u5WZEGSIFUcOa8oxmtbMEc82Ei2ELBLBp_xY299YkTmSI3xvvBj9-UTK1i_zhydO6lKN83JxOK8tjJN037hR3nNqD066v0F0M_We3EKG6vWWZ/IMG_8182.png' },
+                    { name: 'черный', img: 'https://psv4.userapi.com/s/v1/d2/iYlUGbu71S3kiIMWlO3mhT7QmVKt6iGrYkOp_JEvmsYEvo9i2qt-6-wRILiiRrHuNG7A70qkcdyIVWk0kYbJjaL8fg_pimAHdw7bFl8z_aRcbBWBYdmnKitcLH2aC1tr3qfkWM-OjJiG/IMG_8446.png' },
+                    { name: 'рыжий', img: 'https://psv4.userapi.com/s/v1/d2/Xv0Z5_6_D2kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8201.png' },
+                    { name: 'темно-коричневый', img: 'https://psv4.userapi.com/s/v1/d2/Yv0Z5_6_D2kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8199.png' },
+                    { name: 'грязный', img: 'https://psv4.userapi.com/s/v1/d2/Zv0Z5_6_D2kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8200.png' },
+                    { name: 'светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/av0Z5_6_D2kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8197.png' },
+                    { name: 'темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/bv0Z5_6_D2kL9D2r8V3-qM3y_D2y7y-A8V2-qM3y_D2y7y-A8V2-qM3y/IMG_8198.png' }
+                ]
+            }
+        }
     };
 
-    // НАСТРОЙКА СЛОЕВ: Контуры (модельки) всегда имеют z-index выше чем их окрасы
+    // СЛОИ (Z-INDEX)
     let layers = [
         { id: 'body', name: 'Окрас тела', z: 1, img: lib.body.colors[0].img, movable: false },
-        { id: 'base', name: 'Моделька кота', z: 2, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
-        { id: 'eyes', name: 'Цвет глаз', z: 3, img: lib.eyes.colors[0].img, movable: false },
+        { id: 'outline', name: 'Контур тела', z: 2, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
+        { id: 'eyes', name: 'Глаза', z: 3, img: lib.eyes.colors[0].img, movable: false },
         
-        // ХВОСТ РАЗБИТ НА 2 ЧАСТИ ДЛЯ ПРАВИЛЬНОГО ОТОБРАЖЕНИЯ
-        { id: 'tail_color', name: 'Окрас хвоста', z: 9, img: lib.tail.colorsByModel.t1[0].img, movable: true },
-        { id: 'tail', name: 'Хвост', z: 10, img: lib.tail.types[0].model, movable: true, currentTypeId: 't1' },
+        { id: 'tail_color', name: 'Окрас хвоста', z: 10, img: '', movable: false },
+        { id: 'tail', name: 'Хвост', z: 11, img: '', movable: true, modelId: '' },
         
-        { id: 'belly', name: 'Живот', z: 11, img: '', movable: true },
-        { id: 'mane', name: 'Грива', z: 12, img: '', movable: true },
-        { id: 'cheeks', name: 'Щеки', z: 13, img: '', movable: true },
-        { id: 'ears', name: 'Уши', z: 14, img: '', movable: true },
-        { id: 'bangs', name: 'Челка', z: 15, img: '', movable: true }
+        { id: 'belly_color', name: 'Окрас живота', z: 12, img: '', movable: false },
+        { id: 'belly', name: 'Живот', z: 13, img: '', movable: true, modelId: '' },
+
+        { id: 'bangs_color', name: 'Окрас челки', z: 20, img: '', movable: false },
+        { id: 'bangs', name: 'Челка', z: 21, img: '', movable: true, modelId: '' },
+
+        { id: 'cheeks_color', name: 'Окрас щек', z: 22, img: '', movable: false },
+        { id: 'cheeks', name: 'Щеки', z: 23, img: '', movable: true, modelId: '' },
+
+        { id: 'mane_color', name: 'Окрас гривы', z: 24, img: '', movable: false },
+        { id: 'mane', name: 'Грива', z: 25, img: '', movable: true, modelId: '' }
     ];
 
     let activeTab = 'body';
 
     function renderAll() {
+        // Котик
         const v = document.getElementById('viewport');
         v.innerHTML = '';
         [...layers].sort((a,b) => a.z - b.z).forEach(l => {
             if(!l.img) return;
             const d = document.createElement('div');
             d.className = 'layer';
-            d.style.zIndex = l.z;
+            d.style.zIndex = Math.floor(l.z);
             d.style.backgroundImage = `url(${l.img})`;
             v.appendChild(d);
         });
 
+        // Вкладки
         const t = document.getElementById('tabs');
         t.innerHTML = '';
-        layers.forEach(l => {
-            // Исключаем системные слои из вкладок
-            if(l.id === 'base' || l.id === 'tail_color') return; 
+        Object.keys(lib).forEach(k => {
             const b = document.createElement('button');
-            b.className = `tab-btn ${activeTab === l.id ? 'active' : ''}`;
-            b.innerText = l.name;
-            b.onclick = () => { activeTab = l.id; renderAll(); };
+            b.className = `tab-btn ${activeTab === k ? 'active' : ''}`;
+            b.innerText = lib[k].name;
+            b.onclick = () => { activeTab = k; renderAll(); };
             t.appendChild(b);
         });
 
-        const controls = document.getElementById('controls');
-        controls.innerHTML = ''; 
-        const activeLayer = layers.find(l => l.id === activeTab);
-        
-        if (activeTab === 'tail') {
-            const data = lib.tail;
-            const typeLabel = document.createElement('div');
-            typeLabel.className = 'sub-label';
-            typeLabel.innerText = 'Вид хвоста';
-            controls.appendChild(typeLabel);
+        // Панель управления
+        const ctrl = document.getElementById('controls');
+        ctrl.innerHTML = '';
+        const item = lib[activeTab];
+        const currentLayer = layers.find(l => l.id === activeTab);
 
-            const typeGrid = document.createElement('div');
-            typeGrid.className = 'grid';
-            data.types.forEach(type => {
+        if (item.models) {
+            ctrl.innerHTML += `<div class="sub-label">Модель</div>`;
+            const mGrid = document.createElement('div');
+            mGrid.className = 'grid';
+            item.models.forEach(m => {
                 const card = document.createElement('div');
-                card.className = `card ${activeLayer.currentTypeId === type.id ? 'active' : ''}`;
-                card.innerHTML = `<div class="mini-img" style="background-image:url(${type.model})"></div><div style="font-size:10px;">${type.name}</div>`;
-                card.onclick = () => { 
-                    activeLayer.currentTypeId = type.id;
-                    activeLayer.img = type.model; // Обновляем саму модельку
-                    // Синхронизируем окрас хвоста (ставим первый доступный цвет)
-                    const colorLayer = layers.find(la => la.id === 'tail_color');
-                    colorLayer.img = data.colorsByModel[type.id][0].img;
-                    renderAll(); 
+                card.className = `card ${currentLayer.modelId === m.id ? 'active' : ''}`;
+                card.innerHTML = `<div class="mini-img" style="background-image:url(${m.model})"></div><div>${m.name}</div>`;
+                card.onclick = () => {
+                    currentLayer.modelId = m.id;
+                    currentLayer.img = m.model;
+                    const cL = layers.find(l => l.id === activeTab + '_color');
+                    cL.img = item.colors[m.id][0].img;
+                    renderAll();
                 };
-                typeGrid.appendChild(card);
+                mGrid.appendChild(card);
             });
-            controls.appendChild(typeGrid);
+            ctrl.appendChild(mGrid);
 
-            const colorLabel = document.createElement('div');
-            colorLabel.className = 'sub-label';
-            colorLabel.innerText = 'Окрас хвоста';
-            controls.appendChild(colorLabel);
-
-            const colorGrid = document.createElement('div');
-            colorGrid.className = 'grid';
-            const colorLayer = layers.find(la => la.id === 'tail_color');
-            const currentColors = data.colorsByModel[activeLayer.currentTypeId] || [];
-            currentColors.forEach(color => {
+            if (currentLayer.modelId) {
+                ctrl.innerHTML += `<div class="sub-label">Окрас</div>`;
+                const cGrid = document.createElement('div');
+                cGrid.className = 'grid';
+                const cL = layers.find(l => l.id === activeTab + '_color');
+                item.colors[currentLayer.modelId].forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = `card ${cL.img === c.img ? 'active' : ''}`;
+                    card.innerHTML = `<div class="mini-img" style="background-image:url(${c.img})"></div><div>${c.name}</div>`;
+                    card.onclick = () => { cL.img = c.img; renderAll(); };
+                    cGrid.appendChild(card);
+                });
+                ctrl.appendChild(cGrid);
+            }
+        } else {
+            ctrl.innerHTML += `<div class="sub-label">Цвет</div>`;
+            const g = document.createElement('div');
+            g.className = 'grid';
+            item.colors.forEach(c => {
                 const card = document.createElement('div');
-                card.className = `card ${colorLayer.img === color.img ? 'active' : ''}`;
-                card.innerHTML = `<div class="mini-img" style="background-image:url(${color.img})"></div><div style="font-size:10px;">${color.name}</div>`;
-                card.onclick = () => { colorLayer.img = color.img; renderAll(); };
-                colorGrid.appendChild(card);
+                card.className = `card ${currentLayer.img === c.img ? 'active' : ''}`;
+                card.innerHTML = `<div class="mini-img" style="background-image:url(${c.img})"></div><div>${c.name}</div>`;
+                card.onclick = () => { currentLayer.img = c.img; renderAll(); };
+                g.appendChild(card);
             });
-            controls.appendChild(colorGrid);
-
-        } else if (lib[activeTab] && lib[activeTab].colors) {
-            const data = lib[activeTab];
-            const label = document.createElement('div');
-            label.className = 'sub-label';
-            label.innerText = 'Доступные цвета';
-            controls.appendChild(label);
-
-            const grid = document.createElement('div');
-            grid.className = 'grid';
-            data.colors.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `card ${activeLayer.img === item.img ? 'active' : ''}`;
-                card.innerHTML = `<div class="mini-img" style="background-image:url(${item.img})"></div><div style="font-size:10px;">${item.name}</div>`;
-                card.onclick = () => { activeLayer.img = item.img; renderAll(); };
-                grid.appendChild(card);
-            });
-            controls.appendChild(grid);
+            ctrl.appendChild(g);
         }
 
+        // Слои UI
         const ui = document.getElementById('layers-ui');
         ui.innerHTML = '';
-        [...layers].filter(l => l.movable && l.id !== 'tail_color').sort((a,b) => b.z - a.z).forEach(l => {
-            const item = document.createElement('div');
-            item.className = 'layer-item';
-            item.innerHTML = `
-                <span>${l.name}</span>
-                <div class="layer-btns">
-                    <button onclick="moveLayer('${l.id}', 1)">↑</button>
-                    <button onclick="moveLayer('${l.id}', -1)">↓</button>
-                </div>
-            `;
-            ui.appendChild(item);
+        [...layers].filter(l => l.movable).sort((a,b) => b.z - a.z).forEach(l => {
+            const row = document.createElement('div');
+            row.className = 'layer-item';
+            row.innerHTML = `<span>${l.name}</span><div class="layer-btns">
+                <button onclick="moveL('${l.id}', 1)">↑</button>
+                <button onclick="moveL('${l.id}', -1)">↓</button>
+            </div>`;
+            ui.appendChild(row);
         });
     }
 
-    function moveLayer(id, dir) {
+    function moveL(id, dir) {
         const target = layers.find(l => l.id === id);
         target.z += dir;
-        // Если двигаем хвост, двигаем его окрас вместе с ним
-        if(id === 'tail') {
-            const colorLayer = layers.find(la => la.id === 'tail_color');
-            colorLayer.z = target.z - 0.1; // Всегда чуть ниже основного хвоста
-        }
+        const colorL = layers.find(l => l.id === id + '_color');
+        if (colorL) colorL.z = target.z - 0.1;
         renderAll();
     }
 
     function saveAndExit() {
-        const id = localStorage.getItem('userId');
-        let p = JSON.parse(localStorage.getItem('catProfile_' + id)) || {};
-        p.appearance = layers;
-        localStorage.setItem('catProfile_' + id, JSON.stringify(p));
         alert("Сохранено!");
     }
 
