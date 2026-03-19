@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CBR CATS - Регистрация</title>
+    <style>
+        body {
+            background: url('https://i.ibb.co/q2K768f/spooky-forest-mystery-horror-beauty-nature-generated-by-ai.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header-template {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: block;
+        }
+
+        .about-section {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-sizing: border-box;
+        }
+
+        .about-section p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .vk-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #5181b8;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .box {
+            display: flex;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            gap: 50px;
+            width: 100%;
+            max-width: 900px;
+            box-sizing: border-box;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-size: 22px; 
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            font-weight: normal;
+        }
+        
+        input {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        button {
+            padding: 14px;
+            background: #fff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        button:hover { background: #ccc; }
+
+        @media (max-width: 700px) {
+            .box { flex-direction: column; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://i.ibb.co/qYhV1ny8/image.jpg" class="header-template" alt="CBR CATS Header">
+
+    <div class="about-section">
+        <h2>О ПРОЕКТЕ</h2>
+        <p>
+            Добро пожаловать в игру <b>CBR-cats</b> — уникальный мир, где вы можете создать своего лесного кота, 
+            выбрать племя и начать свою историю. Опасное выживание среди других зверушек и зомбей...Где двуногие восстали мертвыми! Так попробуйте себя в этом...Вдруг вы станете Героями? (16+)
+        </p>
+        <a href="https://vk.com/cbrcats" target="_blank" class="vk-link">Наш паблик ВК</a>
+    </div>
+
+    <div class="box">
+        <div class="col">
+            <h2>ВХОД</h2>
+            <input type="text" id="l-email" placeholder="Почта">
+            <input type="password" id="l-pass" placeholder="Пароль">
+            <button onclick="login()">ВОЙТИ</button>
+        </div>
+
+        <div class="col">
+            <h2>РЕГИСТРАЦИЯ</h2>
+            <input type="text" id="r-email" placeholder="Почта">
+            <input type="password" id="r-pass1" placeholder="Пароль">
+            <input type="password" id="r-pass2" placeholder="Повтор пароля">
+            <button onclick="register()">СОЗДАТЬ</button>
+        </div>
+    </div>
+
+    <script>
+        function register() {
+            const email = document.getElementById('r-email').value.trim();
+            const p1 = document.getElementById('r-pass1').value;
+            const p2 = document.getElementById('r-pass2').value;
+
+            if (email && p1 === p2 && p1 !== "") {
+                // Получаем список всех аккаунтов или создаем новый
+                let accounts = JSON.parse(localStorage.getItem('cbr_accounts')) || [];
+
+                // Проверка, не занята ли почта
+                if (accounts.some(acc => acc.email === email)) {
+                    alert("Этот адрес уже зарегистрирован!");
+                    return;
+                }
+
+                // Генерация ID
+                let lastId = localStorage.getItem('cbr_last_id') || "-0.01";
+                let newId = (parseFloat(lastId) + 0.01).toFixed(2);
+
+                // Создаем объект нового аккаунта
+                const newAcc = { email: email, pass: p1, id: newId };
+                accounts.push(newAcc);
+
+                // Сохраняем базу и текущую сессию
+                localStorage.setItem('cbr_accounts', JSON.stringify(accounts));
+                localStorage.setItem('cbr_last_id', newId);
+                localStorage.setItem('userEmail', email); // Для совместимости с index.html
+                localStorage.setItem('userId', newId);
+
+                window.location.href = 'register_setup.html';
+            } else {
+                alert("Ошибка заполнения!");
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('l-email').value.trim();
+            const pass = document.getElementById('l-pass').value;
+            
+            let accounts = JSON.parse(localStorage.getItem('cbr_accounts')) || [];
+            
+            // Ищем пользователя в "базе"
+            const user = accounts.find(acc => acc.email === email && acc.pass === pass);
+
+            if (user) {
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userId', user.id);
+
+                // Проверяем, есть ли кот именно у этого ID
+                if (localStorage.getItem('catProfile_' + user.id)) {
+                    window.location.href = 'profile.html';
+                } else {
+                    window.location.href = 'register_setup.html';
+                }
+            } else {
+                alert("Неверная почта или пароль!");
+            }
+        }
+    </script>
+</body>
+</html>
