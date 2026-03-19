@@ -13,40 +13,79 @@
         }
 
         .editor-container {
-            width: 1150px; height: 850px;
+            width: 1100px; height: 850px;
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(15px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: grid;
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 1fr 380px;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        .preview-side { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .cat-viewport { width: 500px; height: 500px; position: relative; }
-        .layer { position: absolute; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: none; }
+        .preview-side {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
 
-        .selector-side { display: flex; flex-direction: column; padding: 25px; border-left: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.3); }
+        .cat-viewport {
+            width: 500px; height: 500px;
+            position: relative;
+            background: transparent;
+        }
+
+        .layer {
+            position: absolute; width: 100%; height: 100%;
+            background-size: contain; background-repeat: no-repeat;
+            background-position: center; pointer-events: none;
+        }
+
+        .selector-side {
+            display: flex; flex-direction: column; padding: 25px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0,0,0,0.3);
+        }
+
         .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
-        .tab-btn { background: rgba(255, 255, 255, 0.1); border: none; color: white; padding: 8px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; text-transform: uppercase; }
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1); border: none; color: white;
+            padding: 8px 10px; border-radius: 5px; cursor: pointer; font-size: 10px;
+            text-transform: uppercase;
+        }
         .tab-btn.active { background: #4caf50; }
 
-        .sub-label { font-size: 11px; color: #888; text-transform: uppercase; margin: 15px 0 8px; letter-spacing: 1px; border-bottom: 1px solid #333; padding-bottom: 3px; }
-        .scroll-area { height: 380px; overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .scroll-area {
+            height: 350px; overflow-y: auto;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            padding-right: 5px; margin-bottom: 20px;
+        }
 
-        .item-card { background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.2s; }
-        .item-card:hover { background: rgba(255, 255, 255, 0.1); }
-        .item-card.active { border-color: #4caf50; background: rgba(76, 175, 80, 0.1); }
-        .mini-img { height: 55px; background-size: contain; background-repeat: no-repeat; background-position: center; margin-bottom: 5px; }
+        .okras-card {
+            background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px;
+            cursor: pointer; text-align: center; border: 1px solid transparent;
+        }
+        .okras-card.active { border-color: #4caf50; background: rgba(76, 175, 80, 0.1); }
+        .mini-img { height: 60px; background-size: contain; background-repeat: no-repeat; background-position: center; margin-bottom: 5px; }
 
         .layers-label { font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 10px; }
-        .layers-list { background: rgba(255,255,255,0.03); border-radius: 10px; overflow-y: auto; flex: 1; }
-        .layer-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-        .layer-btns button { background: #222; border: 1px solid #444; color: white; width: 26px; height: 26px; border-radius: 4px; cursor: pointer; }
+        .layers-list {
+            background: rgba(255,255,255,0.03); border-radius: 10px;
+            overflow-y: auto; flex: 1;
+        }
+        .layer-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+        .layer-btns button {
+            background: #222; border: 1px solid #444; color: white;
+            width: 26px; height: 26px; border-radius: 4px; cursor: pointer;
+        }
 
-        .finish-btn { margin-top: 20px; background: #4caf50; border: none; color: white; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .finish-btn {
+            margin-top: 20px; background: #4caf50; border: none; color: white;
+            padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold;
+        }
+
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
     </style>
@@ -61,9 +100,9 @@
 
     <div class="selector-side">
         <div class="tabs" id="tabs"></div>
-        <div class="scroll-area" id="controls"></div>
+        <div class="scroll-area" id="items"></div>
         
-        <div class="layers-label">Порядок слоёв</div>
+        <div class="layers-label">Перемещение деталей</div>
         <div class="layers-list" id="layers-ui"></div>
 
         <button class="finish-btn" onclick="saveAndExit()">ЗАВЕРШИТЬ СОЗДАНИЕ</button>
@@ -71,41 +110,40 @@
 </div>
 
 <script>
-    // Порядок слоев: Тело(1) -> Глаза(2) -> Моделька(3) -> Остальное(10+)
     let layers = [
         { id: 'body', name: 'Окрас тела', z: 1, img: 'https://psv4.userapi.com/s/v1/d2/YuXGokbsOuLU8Kj9jWXCv7kgpDvBOKitH2KKzGaVbVqqcUMnZX5yXYoTt-SIZ_7y73wwtS3CdnnO1PefrFRlv5fbmdcLH_cgW6Lr_T4s-xZ1tBc45XsBJwsd9rcBpNYvUBn0XBrSOKg2/IMG_8103.png', movable: false },
         { id: 'eyes', name: 'Цвет глаз', z: 2, img: 'https://psv4.userapi.com/s/v1/d2/66FUDrM30yauTpmMT-cxYrpJ5YNQJdb587j6XDo9HdWVHNM6CWbYho3WEsuzR71SkzlALar5J8qTpx9U-C6qk9zaDQI1BusdzJ2FMTDGBNQrPhj8aTcyDW4SzMNYaqWcGkaHP4umE-Xj/IMG_8074.png', movable: false },
         { id: 'base', name: 'Моделька кота', z: 3, img: 'https://psv4.userapi.com/s/v1/d2/u5MmjzAnQPxd78Vum6JpQEWND6fUYiR240LOMRlpBRz4rYk-XuuYyUy_RPl_aiYklec5yg8AcHioyzgTE7mAdS2EzmzkrSNkKxhvNN658UgrQAjaugmBPahou67ye1ET-9YwX5xbvZkO/IMG_8072.png', movable: false },
-        { id: 'tail', name: 'Хвост', z: 10, img: '', movable: true, typeId: null },
-        { id: 'mane', name: 'Грива', z: 11, img: '', movable: true, typeId: null },
-        { id: 'cheeks', name: 'Щеки', z: 12, img: '', movable: true, typeId: null },
-        { id: 'ears', name: 'Уши', z: 13, img: '', movable: true, typeId: null },
-        { id: 'belly', name: 'Живот', z: 14, img: '', movable: true, typeId: null },
-        { id: 'bangs', name: 'Челка', z: 15, img: '', movable: true, typeId: null }
+        { id: 'tail', name: 'Хвост', z: 10, img: '', movable: true },
+        { id: 'belly', name: 'Живот', z: 11, img: '', movable: true },
+        { id: 'mane', name: 'Грива', z: 12, img: '', movable: true },
+        { id: 'cheeks', name: 'Щеки', z: 13, img: '', movable: true },
+        { id: 'ears', name: 'Уши', z: 14, img: '', movable: true },
+        { id: 'bangs', name: 'Челка', z: 15, img: '', movable: true }
     ];
 
     const lib = {
-        body: { colors: [
+        body: [
             { name: 'Белый', img: 'https://psv4.userapi.com/s/v1/d2/YuXGokbsOuLU8Kj9jWXCv7kgpDvBOKitH2KKzGaVbVqqcUMnZX5yXYoTt-SIZ_7y73wwtS3CdnnO1PefrFRlv5fbmdcLH_cgW6Lr_T4s-xZ1tBc45XsBJwsd9rcBpNYvUBn0XBrSOKg2/IMG_8103.png' },
             { name: 'Черный', img: 'https://psv4.userapi.com/s/v1/d2/1JBuWj7BxdwpksiW2e3415tfG8m6s3XHIv2ed8o841j0w3Wm-FxQM0E_NIPH-qSos6nvb8PlckGvL8ek_v0iX8vlf3PPhFZPemAJdhEx2l66Larwjs56FiJ_Q3GuEid55hxgl73dn4zS/IMG_8078.png' },
-            { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' }
-        ]},
-        eyes: { colors: [
+            { name: 'Коричневый', img: 'https://psv4.userapi.com/s/v1/d2/BJPWf67r3d_4me3KpEodEA6y2ZZbjumpAwvsHW_T_RIB4kHmN_rFcRwyte444U0m99toYuhyy2MTMni0OTg5QD98Faf_XDDepz325f2nZuGizjZK2mGYcWx1LVKdIic9AajPaJ7NLiHU/IMG_8080.png' },
+            { name: 'Грязный', img: 'https://psv4.userapi.com/s/v1/d2/1OcGOFhH7RuKF7xq4VvyRwtdG52uTS_Zwf_lDAdimp0a_7xIt038Ixh48XToBmt2d8Gd6K_wAtBYkG8myFlI_oX0h68h6zSMUJ456doqGarB--JyzdTye3H4cn8DM0TGQJOlWhsPmBtz/IMG_8079.png' },
+            { name: 'Фиолетовый', img: 'https://psv4.userapi.com/s/v1/d2/SdP8pap17v1tsyV_6x9gxJG0scmEjrMAA0v37Hnfr289PtqXOCq-vnQtHfn4MDn-rAX348zb_QAbU8wrdsZNmRPEmB9bXJXgZvk0euPwsUBUmfpxACTUvbtkUgQC7HLaKg2BGW_5fXM4/IMG_8081.png' },
+            { name: 'Светло-голубой', img: 'https://psv4.userapi.com/s/v1/d2/YmQVM4-0mo_aO_VHXkUYLWJaAt4InFN8cSyuOi4J8ymviFLXLwXQp0r4t0uIxA-Exys5g-gT61JgAVq1-WczmMLT9RjiTySvYePneWCBi7GszqRB1kkvU_k48H5Kazou29Zda6Uashaa/IMG_8084.png' },
+            { name: 'Темно-голубой', img: 'https://psv4.userapi.com/s/v1/d2/cE7ERL5kdNzMqa-KEB6V1pAB8rOzFrQ7in85ljr2CjbD6NmKLOz-5dUFJ1J0s4I9f7_7LRK81zw23YSme1R-v_9rkJX2fgbogDFk6WJLf5oz2zgPViT-2K4WNqx1_QfoRzABIu3GT15E/IMG_8083.png' },
+            { name: 'Голубой', img: 'https://psv4.userapi.com/s/v1/d2/YJ10qdVGAhJZQMXaz-oypYuG4vMAzPG8dSj50XLYPaWgky_Js2EC6KNd-4v5aPNP1_cCfPJfIGzhk4oG_C8QeIe7jlXaF-Cfydo2Og5bUnCFbCv1JvRSLmQY9JEGta_dImAmo6WAFDC1/IMG_8082.png' },
+            { name: 'Рыжий', img: 'https://psv4.userapi.com/s/v1/d2/kELWKDbzGvukdiC6mkY7NES0E1MIkkNHK9jPVwN3dLQEgRbHduTKIzDk5DeZ_cEYdtJJQ8WVxO2kGefa1r3wnzI2TmYmGhyOKbDsjcUf2a7AWavEyg_DTBsVAzXR5lk5tDQRl2SIZ7hU/IMG_8086.png' },
+            { name: 'Ярко-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/3b3DZeajKh2NkGO8fwmTa0YM0vmWYJTucEj9FgQvybjCZo1r2WJS9-R9-NCoEkpIVQt7gLAEiF-u8vr-Kd3l4GA-Efk7Qli0TJ_VOhMSQ9mScGL64kVrIJJ-6jRwFUkTwpirEOBt6bzv/IMG_8087.png' },
+            { name: 'Темно-рыжий', img: 'https://psv4.userapi.com/s/v1/d2/9vKVXwkCdimh884acxWCgVR4TZC_C1YPVhHaovRDF7PcYpZKMmCJfuq-ZWMFNv8DnilH55KyZKNbz1S2MexJjNNegW_JrJ14b5atlYCvQHMKCx6T46R_QYo7lBm7b8YQYAL4tce4QOHC/IMG_8085.png' }
+        ],
+        eyes: [
             { name: 'Синие', img: 'https://psv4.userapi.com/s/v1/d2/66FUDrM30yauTpmMT-cxYrpJ5YNQJdb587j6XDo9HdWVHNM6CWbYho3WEsuzR71SkzlALar5J8qTpx9U-C6qk9zaDQI1BusdzJ2FMTDGBNQrPhj8aTcyDW4SzMNYaqWcGkaHP4umE-Xj/IMG_8074.png' },
+            { name: 'Салатовые', img: 'https://psv4.userapi.com/s/v1/d2/1u8p17jwFAFOW22zwLVF2m4a1nyGcCtkkDehsePjYIOyDRHFawmA8fTHJy-CGMjTWU9Jp7s0gLmsONcf0FgLdYizcKWYyjnX25bILsBK8ONlh8co8XNKxcW2eJnmFDZ0uuKgteJbXMfv/IMG_8077.png' },
+            { name: 'Зеленые', img: 'https://psv4.userapi.com/s/v1/d2/6x-dWhJMcKU-I22N7BLfKTF2YKZNjSfZb91FSHPtDirxoecQeWad3izJX6iAV-qOKVFVxz6lYF2lwko2YdfjfL5N92NQUsRvr9VnMZ7C49pspOnmXRO63vo02hjG1jBlR6ZRXcwMB_HZ/IMG_8076.png' },
+            { name: 'Желтые', img: 'https://psv4.userapi.com/s/v1/d2/3MH1frKGZ5HJsmSQcpptQe-VmRPcA4J_I5EzqfBGL0QqLlUHEISCY57e1eVI_MME3pXCFXYtTSRaZ5385gqaI730-JXWn-H6JhiPt8xGLPXbU3-JcvTgnYeSCQpxsVic48BY37qMAImw/IMG_8073.png' },
             { name: 'Красные', img: 'https://psv4.userapi.com/s/v1/d2/OGike99qf83zGS6FN4rcv3ObXezX4MN2bpwL9su3LC39QGhNS8L6VQGy9uC31gtKiHnx6vJzwg6QxIP7wroGUkpQ_B6HrZ9-Mej_hIV255OtDphuFvHUQK1wA7Qhc2syfCqzxWWOQBDb/IMG_8075.png' }
-        ]},
-        tail: {
-            types: [{ id: 't1', name: 'Обычный' }, { id: 't2', name: 'Кисточка' }],
-            colors: [{ name: 'Серый', img: 'URL_1' }, { name: 'Черный', img: 'URL_2' }]
-        },
-        ears: {
-            types: [{ id: 'e1', name: 'Стоячие' }, { id: 'e2', name: 'Вислоухие' }],
-            colors: [{ name: 'Белые', img: 'URL_3' }]
-        },
-        mane: { types: [], colors: [] },
-        cheeks: { types: [], colors: [] },
-        belly: { types: [], colors: [] },
-        bangs: { types: [], colors: [] }
+        ],
+        tail: [], belly: [], mane: [], cheeks: [], ears: [], bangs: []
     };
 
     let activeTab = 'body';
@@ -132,55 +170,35 @@
             t.appendChild(b);
         });
 
-        const controls = document.getElementById('controls');
-        controls.innerHTML = '';
-        const data = lib[activeTab] || { colors: [] };
-
-        // Секция ВИДЫ (кроме тела и глаз)
-        if (data.types && data.types.length > 0) {
-            controls.innerHTML += `<div class="sub-label">Виды</div>`;
-            const typeGrid = document.createElement('div');
-            typeGrid.className = 'grid';
-            data.types.forEach(type => {
-                const card = document.createElement('div');
-                card.className = `item-card ${layers.find(l => l.id === activeTab).typeId === type.id ? 'active' : ''}`;
-                card.innerHTML = `<div>${type.name}</div>`;
-                card.onclick = () => { layers.find(l => l.id === activeTab).typeId = type.id; renderAll(); };
-                typeGrid.appendChild(card);
-            });
-            controls.appendChild(typeGrid);
-        }
-
-        // Секция ОКРАСЫ
-        if (data.colors && data.colors.length > 0) {
-            controls.innerHTML += `<div class="sub-label">Окрасы</div>`;
-            const colorGrid = document.createElement('div');
-            colorGrid.className = 'grid';
-            data.colors.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `item-card ${layers.find(l => l.id === activeTab).img === item.img ? 'active' : ''}`;
-                card.innerHTML = `<div class="mini-img" style="background-image:url(${item.img})"></div><div>${item.name}</div>`;
-                card.onclick = () => { layers.find(l => l.id === activeTab).img = item.img; renderAll(); };
-                colorGrid.appendChild(card);
-            });
-            controls.appendChild(colorGrid);
-        }
+        const i = document.getElementById('items');
+        i.innerHTML = '';
+        (lib[activeTab] || []).forEach(item => {
+            const card = document.createElement('div');
+            card.className = `okras-card ${layers.find(l => l.id === activeTab).img === item.img ? 'active' : ''}`;
+            card.innerHTML = `<div class="mini-img" style="background-image:url(${item.img})"></div><div style="font-size:10px;">${item.name}</div>`;
+            card.onclick = () => { layers.find(l => l.id === activeTab).img = item.img; renderAll(); };
+            i.appendChild(card);
+        });
 
         const ui = document.getElementById('layers-ui');
         ui.innerHTML = '';
         [...layers].filter(l => l.movable).sort((a,b) => b.z - a.z).forEach(l => {
             const item = document.createElement('div');
             item.className = 'layer-item';
-            item.innerHTML = `<span>${l.name} (Z: ${l.z})</span><div class="layer-btns">
-                <button onclick="moveLayer('${l.id}', 1)">↑</button>
-                <button onclick="moveLayer('${l.id}', -1)">↓</button>
-            </div>`;
+            item.innerHTML = `
+                <span>${l.name}</span>
+                <div class="layer-btns">
+                    <button onclick="moveLayer('${l.id}', 1)">↑</button>
+                    <button onclick="moveLayer('${l.id}', -1)">↓</button>
+                </div>
+            `;
             ui.appendChild(item);
         });
     }
 
     function moveLayer(id, dir) {
-        layers.find(l => l.id === id).z += dir;
+        const target = layers.find(l => l.id === id);
+        target.z += dir;
         renderAll();
     }
 
