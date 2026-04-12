@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBRcats — Игровая</title>
+    <style>
+        /* Обнуляем отступы, чтобы ничего не выходило за грани */
+        * { box-sizing: border-box; }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Запрещаем скролл самого сайта */
+            background: #050505;
+            color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
+        }
 
+        /* Главный контейнер на весь экран */
+        .app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        /* Боковые панели */
+        .side-panel {
+            flex: 0 0 250px; /* Фиксированная ширина боков */
+            background: #000000;
+            border: 2px solid #ffcc00;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            height: 100%;
+            overflow-y: auto; /* Скролл только внутри панели, если контента много */
+        }
+
+        /* Центральное игровое поле */
+        .game-viewport {
+            flex: 1; /* Занимает всё свободное место */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            border: 1px solid #222;
+            overflow: hidden; /* Чтобы фон не вылезал */
+        }
+
+        /* Само поле 1000x1000 (масштабируется под экран, но сохраняет пропорции) */
+        #game-canvas {
+            width: 1000px;
+            height: 1000px;
+            background: #1a1a1a;
+            position: relative;
+            /* Масштабирование, чтобы влезло в экран на телефоне */
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
+        }
+
+        /* Заголовки */
+        h3 {
+            color: #ffcc00;
+            font-size: 0.9em;
+            text-align: center;
+            margin: 0 0 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #222;
+            padding-bottom: 5px;
+        }
+
+        /* Стили для чата и статов */
+        .chat-block { flex: 2; background: #080808; margin-bottom: 10px; padding: 5px; font-size: 0.8em; border: 1px solid #111; }
+        .stats-block { flex: 1; margin-bottom: 10px; }
+        .skill-block { flex: 1; }
+
+        .bar { width: 100%; height: 8px; background: #222; margin: 4px 0; border-radius: 4px; }
+        .progress { height: 100%; border-radius: 4px; }
+
+        /* Кнопки действий */
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 5px;
+            background: #111;
+            color: #aaa;
+            border: 1px solid #333;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .action-btn:hover { background: #ffcc00; color: #000; }
+
+        /* Адаптация под маленькие экраны (телефоны) */
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; overflow-y: auto; }
+            .side-panel { flex: none; width: 100%; height: auto; }
+            #game-canvas { width: 95vw; height: 95vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="side-panel">
+            <h3>Чат</h3>
+            <div class="chat-block" id="gameChat"></div>
+            
+            <h3>Параметры</h3>
+            <div class="stats-block">
+                Здоровье <div class="bar"><div class="progress" style="width: 100%; background: #f00;"></div></div>
+                Сытость <div class="bar"><div class="progress" style="width: 70%; background: #0f0;"></div></div>
+            </div>
+
+            <h3>Навыки</h3>
+            <div class="skill-block">
+                Охота: 5% <br> Выживание: 10%
+            </div>
+        </aside>
+
+        <main class="game-viewport">
+            <div id="game-canvas">
+                </div>
+        </main>
+
+        <aside class="side-panel">
+            <h3>Действия</h3>
+            <button class="action-btn">Осмотреться</button>
+            <button class="action-btn">Охота</button>
+            <button class="action-btn">Сон</button>
+            <button class="action-btn" style="margin-top: auto; color: #f00;">Выход</button>
+        </aside>
+    </div>
+
+    <script>
+        // Логика ограничения движения внутри 1000x1000
+        const canvasSize = 1000;
+        let catPos = { x: 500, y: 500 }; // Кот в центре
+
+        function moveCat(newX, newY) {
+            // ПРОВЕРКА: Если новые координаты выходят за 0 или 1000 — отменяем
+            if (newX >= 0 && newX <= canvasSize && newY >= 0 && newY <= canvasSize) {
+                catPos.x = newX;
+                catPos.y = newY;
+                console.log("Кот переместился в:", catPos);
+            } else {
+                console.log("Граница достигнута! Дальше нельзя.");
+            }
+        }
+    </script>
+</body>
+</html>
