@@ -2,33 +2,152 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CBR CATS - Загрузка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBRcats — Главная</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            color: #d1d1d1;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Шапка */
+        header {
+            background: linear-gradient(to bottom, #1a0000, #0a0a0a);
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 2px solid #330000;
+        }
+
+        /* Уменьшенный шаблон */
+        .header-template {
+            max-width: 400px; /* Сделал намного меньше, как ты просил */
+            width: 80%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 5px;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.2));
+        }
+
+        .tagline {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 8px;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        /* Контент */
+        .main-wrapper {
+            display: flex;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+            gap: 25px;
+        }
+
+        .info-block {
+            flex: 2;
+            background: #141414;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #b30000;
+        }
+
+        .info-block h2 {
+            color: #ffcc00;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        .beta-label {
+            background: #333;
+            color: #ffaa00;
+            font-size: 0.6em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
+
+        .vk-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 15px;
+            background: #0077ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* Авторизация */
+        .sidebar {
+            flex: 1;
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #2a2a2a;
+            height: fit-content;
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.9em;
+        }
+
+        .btn-primary { background: #e60000; color: white; }
+        .btn-secondary { border: 1px solid #444; color: #aaa; }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.7em;
+            color: #444;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-wrapper { flex-direction: column; }
+        }
+    </style>
 </head>
-<body style="background: #000; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
-    
-    <div style="font-family: sans-serif; letter-spacing: 2px;">ЗАГРУЗКА МИРА...</div>
+<body>
 
-    <script>
-        window.onload = function() {
-            // 1. Проверяем, залогинен ли пользователь (есть ли ID сессии)
-            const userId = localStorage.getItem('userId');
+    <header>
+        <img src="https://i.ibb.co/7xsmywvY/image.avif" alt="CBRcats" class="header-template">
+        <div class="tagline">Мир, где когти встречаются с безумием</div>
+    </header>
 
-            if (!userId) {
-                // Если ID нет — значит человек не вошел. Отправляем на регистрацию.
-                window.location.replace('menu_regist.html');
-            } else {
-                // 2. Если ID есть, проверяем, создал ли этот конкретный пользователь кота
-                const profile = localStorage.getItem('catProfile_' + userId);
-                
-                if (!profile) {
-                    // Аккаунт есть, но кота нет — отправляем на выбор племени и имени.
-                    window.location.replace('register_setup.html');
-                } else {
-                    // И аккаунт есть, и кот готов — летим в профиль!
-                    window.location.replace('profile.html');
-                }
-            }
-        };
-    </script>
+    <div class="main-wrapper">
+        <section class="info-block">
+            <h2>Об игре <span class="beta-label">бета-тестер</span></h2>
+            <p>
+                Вкратце, идет речь о выживании среди мутированных и страшных существ-зомби. 
+                Сможешь ли ты стать героем? А может даже изгоем этого мира... 
+                Судьба может не пощадить, хотя кто знает.
+            </p>
+            
+            <a href="https://vk.com/cbrcats" class="vk-button" target="_blank">
+                Паблик ВК
+            </a>
+        </section>
+
+        <aside class="sidebar">
+            <a href="../регистрация/reg.html" class="nav-btn btn-primary">Регистрация</a>
+            <a href="#" class="nav-btn btn-secondary">Вход в аккаунт</a>
+            <div class="footer-note">Только для отважных одиночек.</div>
+        </aside>
+    </div>
+
 </body>
 </html>
